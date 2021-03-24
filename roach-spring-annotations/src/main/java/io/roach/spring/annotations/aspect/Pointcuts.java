@@ -13,23 +13,19 @@ import io.roach.spring.annotations.TransactionHints;
  */
 @Aspect
 public class Pointcuts {
-    @Pointcut("within(io.roach.spring..*) "
-            + "&& @within(transactionBoundary) || @annotation(transactionBoundary)")
+    @Pointcut("@within(transactionBoundary) || @annotation(transactionBoundary)")
     public void anyTransactionBoundaryOperation(TransactionBoundary transactionBoundary) {
     }
 
-    @Pointcut("within(io.roach.spring..*) "
-            + "&& @annotation(transactionHints)")
+    @Pointcut("@annotation(transactionHints)")
     public void anyTransactionHintedOperation(TransactionHints transactionHints) {
     }
 
-    @Pointcut("within(io.roach.spring..*) "
-            + "&& @annotation(followerRead)")
+    @Pointcut("@annotation(followerRead)")
     public void anyFollowerReadOperation(FollowerRead followerRead) {
     }
 
-    @Pointcut("within(io.roach.spring..*) "
-            + "&& @annotation(timeTravel)")
+    @Pointcut("@annotation(timeTravel)")
     public void anyTimeTravelOperation(TimeTravel timeTravel) {
     }
 }

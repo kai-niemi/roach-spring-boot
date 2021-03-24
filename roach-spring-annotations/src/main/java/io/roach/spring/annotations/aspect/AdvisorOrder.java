@@ -4,6 +4,8 @@ import org.springframework.core.Ordered;
 
 /**
  * Ordering constants for transaction advisors.
+ *
+ * @author Kai Niemi
  */
 public interface AdvisorOrder {
     int WITHIN_CONTEXT = Ordered.LOWEST_PRECEDENCE - 2; // Transaction attributes advice

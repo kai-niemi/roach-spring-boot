@@ -84,6 +84,7 @@ public class AccountController {
     }
 
     @PostMapping(value = "/transfer")
+    @TransactionBoundary(retryAttempts = 20, maxBackoff = 45000)
     public HttpEntity<Void> transfer(@RequestBody TransferRequest request) {
         BigDecimal totalBalance = accountRepository.getBalance(request.getName());
 
@@ -99,7 +100,9 @@ public class AccountController {
 
     // Horrible, but lets ignore sanity for sake of simplicity in this demo
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, path = "/reset")
-    @TransactionHints({@TransactionHint(name = "application_name", value = "test")})
+    @TransactionHints({
+            @TransactionHint(name = "application_name", value = "test")
+    })
     public HttpEntity<Void> reset() {
         accountRepository.resetAllBalances(new BigDecimal(500.00));
         return ResponseEntity.ok().build();

@@ -12,7 +12,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Indicates that the annotated class or method can read (non-authoritative) from a
  * given timestamp in the past.
  * <p>
- * https://www.cockroachlabs.com/docs/v20.1/as-of-system-time
+ * https://www.cockroachlabs.com/docs/stable/as-of-system-time
+ *
+ * @author Kai Niemi
  */
 @Inherited
 @Documented

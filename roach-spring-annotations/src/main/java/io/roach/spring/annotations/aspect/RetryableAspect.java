@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 
-import javax.annotation.PostConstruct;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -21,27 +19,25 @@ import org.springframework.transaction.TransactionSystemException;
 import io.roach.spring.annotations.TransactionBoundary;
 
 /**
- * AOP around advice that intercepts and retries transient concurrency exceptions such
- * as deadlock looser, pessmistic and optimistic locking failures. Methods matching
- * the pointcut expression (annotated with @TransactionBoundary) are retried a number
- * of times with exponential backoff.
+ * Aspect with an around advice that intercepts and retries transient concurrency exceptions such
+ * as deadlock looser, pessimistic and optimistic locking failures. Methods matching the pointcut
+ * expression (annotated with @TransactionBoundary) are retried a number of times with exponential
+ * backoff.
  * <p>
  * NOTE: This advice needs to runs in a non-transactional context, that is before the
  * underlying transaction advisor.
+ *
+ * @author Kai Niemi
+ * @see RetryableSavepointAspect
  */
 @Aspect
 @Order(AdvisorOrder.OUTER_BOUNDARY) // This advisor must be before the TX advisor in the call chain
 public class RetryableAspect {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @PostConstruct
-    public void init() {
-        logger.info("Bootstrapping Retryable aspect");
-    }
-
     @Around(value = "Pointcuts.anyTransactionBoundaryOperation(transactionBoundary)",
             argNames = "pjp,transactionBoundary")
-    public Object doInTransaction(ProceedingJoinPoint pjp, TransactionBoundary transactionBoundary)
+    public Object aroundTransactionalMethod(ProceedingJoinPoint pjp, TransactionBoundary transactionBoundary)
             throws Throwable {
         // Grab from type if needed (for non-annotated methods)
         if (transactionBoundary == null) {

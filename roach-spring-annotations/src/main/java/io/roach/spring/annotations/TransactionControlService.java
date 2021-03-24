@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
  * Marks the annotated class as {@link org.springframework.transaction.annotation.Transactional @Transactional}
  * with propagation level {@link org.springframework.transaction.annotation.Propagation#MANDATORY},
  * clearly indicating that a transaction is mandatory before method entry.
+ *
+ * @author Kai Niemi
  */
 @Inherited
 @Documented

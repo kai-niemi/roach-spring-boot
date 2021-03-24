@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
  * Marks the annotated class as {@link org.springframework.transaction.annotation.Transactional @Transactional}
  * with propagation level {@link org.springframework.transaction.annotation.Propagation#REQUIRES_NEW REQUIRES_NEW},
  * clearly indicating that a new transaction is started before method entry.
+ *
+ * @author Kai Niemi
  */
 @Inherited
 @Documented
@@ -25,6 +27,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public @interface TransactionBoundary {
+    /**
+     * @return enables reading from a timestamp in the past
+     * @see TimeTravel
+     */
+    String timeTravel() default "(none)";
+
+    /**
+     * @return when true, enables follower reads on queries
+     * @see FollowerRead
+     */
+    boolean followerRead() default false;
+
     /**
      * @return number of times to retry aborted transient data access exceptions with exponential backoff (up to 5s per cycle). Zero or negative value disables retries.
      */
@@ -45,16 +59,16 @@ public @interface TransactionBoundary {
      */
     int timeout() default -1;
 
+    String applicationName() default "(none)";
+
     /**
-     * See https://www.cockroachlabs.com/docs/v19.2/set-transaction.html#set-priority
+     * See https://www.cockroachlabs.com/docs/stable/set-transaction.html#set-priority
      *
      * @return sets the transaction priority
      */
     Priority priority() default Priority.normal;
 
     Vectorize vectorize() default Vectorize.auto;
-
-    String applicationName() default "(default)";
 
     enum Priority {
         normal,

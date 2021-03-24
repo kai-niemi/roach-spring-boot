@@ -27,16 +27,18 @@ public class StressTest {
         final DemoHttpClient httpClient = new DemoHttpClient("http://localhost:8090");
         httpClient.reset();
 
-        // Use concurrent threads (>10) to cause transient serialization errors
-        ExecutorService pool = Executors.newFixedThreadPool(2);
+        int numThreads = Integer.parseInt(System.getProperty("threads", "1"));
+        int cycles = Integer.parseInt(System.getProperty("cycles", "200"));
 
-        for (int i = 0; i < 200; i++) {
+        // Use concurrent threads (>10) to cause transient serialization errors
+        ExecutorService pool = Executors.newFixedThreadPool(numThreads);
+
+        for (int i = 0; i < cycles; i++) {
             String name = (i % 2 == 0) ? "alice" : "bob";
             AccountType type = (i % 2 == 0) ? AccountType.expense : AccountType.asset;
             BigDecimal amount = BigDecimal.valueOf(Math.random() * 50).setScale(2, RoundingMode.HALF_EVEN).negate();
 
             futures.offer(pool.submit(() -> {
-
                 HttpStatus status = httpClient.transfer(name, type, amount).getStatusCode();
                 logger.info("Withdraw ${} from {} ({}) - {}", amount, name, type, status);
                 return status;
@@ -51,7 +53,6 @@ public class StressTest {
                 Thread.currentThread().interrupt();
                 logger.error("", e);
             } catch (ExecutionException e) {
-//                logger.error("", e);
                 if (e.getCause() instanceof HttpClientErrorException) {
                     HttpClientErrorException ex = (HttpClientErrorException) e.getCause();
                     Assertions.assertEquals(HttpStatus.EXPECTATION_FAILED, ex.getStatusCode()); // Negative balance

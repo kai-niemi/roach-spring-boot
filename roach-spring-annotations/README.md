@@ -12,6 +12,6 @@ behavior in Spring Boot applications, including:
 - Adopting the ECB pattern for transactional robustness and clarity
 - Transaction priorities, etc.
 
-See:
+See also:
 
 - [Supported Variables](https://www.cockroachlabs.com/docs/stable/show-vars.html#supported-variables)

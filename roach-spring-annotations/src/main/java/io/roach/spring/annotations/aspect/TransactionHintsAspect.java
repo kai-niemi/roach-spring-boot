@@ -1,7 +1,5 @@
 package io.roach.spring.annotations.aspect;
 
-import javax.annotation.PostConstruct;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -19,7 +17,13 @@ import io.roach.spring.annotations.TransactionHint;
 import io.roach.spring.annotations.TransactionHints;
 
 /**
- * This advisor must be after retry and TX advisors in the call chain (in a transactional context)
+ * Aspect with an around advice that sets the transaction attributes declared by a
+ * transaction boundary, such as time outs.
+ * <p>
+ * NOTE: This advice needs to runs in a transactional context, that is after the
+ * underlying transaction advisor and also any retry advisors.
+ *
+ * @author Kai Niemi
  */
 @Aspect
 @Order(AdvisorOrder.WITHIN_CONTEXT)
@@ -32,16 +36,11 @@ public class TransactionHintsAspect {
     @Value("${info.build.artifact}")
     private String applicationName;
 
-    @PostConstruct
-    public void init() {
-        logger.info("Bootstrapping Transaction Hints aspect");
-    }
-
     @Around(value = "Pointcuts.anyTransactionBoundaryOperation(transactionBoundary)",
             argNames = "pjp,transactionBoundary")
-    public Object doInTransaction(ProceedingJoinPoint pjp, TransactionBoundary transactionBoundary)
+    public Object aroundTransactionalMethod(ProceedingJoinPoint pjp, TransactionBoundary transactionBoundary)
             throws Throwable {
-        Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
+        Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "Explicit transaction required");
 
         // Grab from type if needed (for non-annotated methods)
         if (transactionBoundary == null) {
@@ -60,7 +59,7 @@ public class TransactionHintsAspect {
     }
 
     private void applyVariables(TransactionBoundary transactionBoundary) {
-        if ("(default)".equals(transactionBoundary.applicationName())) {
+        if ("(none)".equals(transactionBoundary.applicationName())) {
             jdbcTemplate.update("SET application_name=?", applicationName);
         } else if (!"".equals(transactionBoundary.applicationName())) {
             jdbcTemplate.update("SET application_name=?", transactionBoundary.applicationName());
@@ -81,13 +80,22 @@ public class TransactionHintsAspect {
         if (transactionBoundary.readOnly()) {
             jdbcTemplate.execute("SET transaction_read_only=true");
         }
+
+        if (transactionBoundary.followerRead()) {
+            jdbcTemplate.execute("SET TRANSACTION AS OF SYSTEM TIME experimental_follower_read_timestamp()");
+        } else {
+            if (!"(none)".equals(transactionBoundary.timeTravel())) {
+                jdbcTemplate.update("SET TRANSACTION AS OF SYSTEM TIME INTERVAL '"
+                        + transactionBoundary.timeTravel() + "'");
+            }
+        }
     }
 
     @Around(value = "Pointcuts.anyTransactionHintedOperation(transactionHints)",
             argNames = "pjp,transactionHints")
-    public Object doInTransactionHinted(ProceedingJoinPoint pjp, TransactionHints transactionHints)
+    public Object aroundTransactionalMethod(ProceedingJoinPoint pjp, TransactionHints transactionHints)
             throws Throwable {
-        Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
+        Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "Explicit transaction required");
 
         if (logger.isTraceEnabled()) {
             logger.trace("Transaction hints applied for {}: {}",

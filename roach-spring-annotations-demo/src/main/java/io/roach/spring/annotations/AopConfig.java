@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Profile;
 
 import io.roach.spring.annotations.aspect.FollowerReadAspect;
 import io.roach.spring.annotations.aspect.RetryableAspect;
-import io.roach.spring.annotations.aspect.RetryableSavepointsAspect;
+import io.roach.spring.annotations.aspect.RetryableSavepointAspect;
 import io.roach.spring.annotations.aspect.TimeTravelAspect;
 import io.roach.spring.annotations.aspect.TransactionHintsAspect;
 
@@ -21,8 +21,8 @@ public class AopConfig {
     // Savepoints only works with JDBC
     @Profile("savepoints")
     @Bean
-    public RetryableSavepointsAspect savepointTransactionAspect() {
-        return new RetryableSavepointsAspect("cockroach_restart");
+    public RetryableSavepointAspect savepointTransactionAspect() {
+        return new RetryableSavepointAspect("cockroach_restart");
     }
 
     @Bean

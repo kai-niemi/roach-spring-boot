@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.annotation.PostConstruct;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -29,35 +27,33 @@ import org.springframework.util.Assert;
 import io.roach.spring.annotations.TransactionBoundary;
 
 /**
- * AOP advice for making TX boundary methods rollback to savepoint
- * on transient errors (aborts due to contention).
+ * Aspect for making transaction boundary methods rollback to a savepoint on transient
+ * errors (serialization errors due to contention).
  * <p>
- * It requires that this advice runs in a non-TX context before the
- * TX advisor.
+ * NOTE: This advice needs to runs in a non-transactional context, that is before the
+ * underlying transaction advisor.
+ *
+ * @author Kai Niemi
+ * @see RetryableAspect
  */
 @Aspect
 // Set highest so this advice runs before the TX advice on each joinpoint
 @Order(AdvisorOrder.OUTER_BOUNDARY)
-public class RetryableSavepointsAspect {
+public class RetryableSavepointAspect {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private String savepointName;
+    private final String savepointName;
 
     @Autowired
     private PlatformTransactionManager transactionManager;
 
-    public RetryableSavepointsAspect(String savepointName) {
+    public RetryableSavepointAspect(String savepointName) {
         this.savepointName = savepointName;
-    }
-
-    @PostConstruct
-    public void init() {
-        logger.info("Bootstrapping RetryableSavepoints aspect");
     }
 
     @Around(value = "Pointcuts.anyTransactionBoundaryOperation(transactionBoundary)",
             argNames = "pjp,transactionBoundary")
-    public Object doInTransaction(ProceedingJoinPoint pjp, TransactionBoundary transactionBoundary) {
+    public Object aroundTransactionalMethod(ProceedingJoinPoint pjp, TransactionBoundary transactionBoundary) {
         Object rv;
 
         // Grab from type if needed (for non-annotated methods)
@@ -97,13 +93,15 @@ public class RetryableSavepointsAspect {
                         break;
                     } catch (TransientDataAccessException ex) {
                         handleTransientException(ex, innerAttempts + outerAttempts, transactionBoundary.retryAttempts(),
+                                transactionBoundary.maxBackoff(),
                                 pjp, backoffMillis);
                         status.rollbackToSavepoint(savepoint);
                     } catch (UndeclaredThrowableException ex) {
                         Throwable t = ex.getUndeclaredThrowable();
                         if (t instanceof TransientDataAccessException) {
                             handleTransientException(t, outerAttempts,
-                                    transactionBoundary.retryAttempts(), pjp, backoffMillis);
+                                    transactionBoundary.retryAttempts(), transactionBoundary.maxBackoff(),
+                                    pjp, backoffMillis);
                         } else {
                             rollbackOnException(status, ex);
                             throw ex;
@@ -113,7 +111,8 @@ public class RetryableSavepointsAspect {
                 status.releaseSavepoint(
                         savepoint); // May throw transient errors, catch in outer loop and rollback entire TX
             } catch (TransientDataAccessException ex) {
-                handleTransientException(ex, outerAttempts, transactionBoundary.retryAttempts(), pjp, backoffMillis);
+                handleTransientException(ex, outerAttempts, transactionBoundary.retryAttempts(),
+                        transactionBoundary.maxBackoff(), pjp, backoffMillis);
                 this.transactionManager.rollback(status);
                 continue;
             } catch (RuntimeException | Error ex) {
@@ -129,7 +128,8 @@ public class RetryableSavepointsAspect {
                 transactionManager.commit(status);
                 break;
             } catch (TransientDataAccessException | TransactionSystemException ex) {
-                handleTransientException(ex, outerAttempts, transactionBoundary.retryAttempts(), pjp, backoffMillis);
+                handleTransientException(ex, outerAttempts, transactionBoundary.retryAttempts(),
+                        transactionBoundary.maxBackoff(), pjp, backoffMillis);
             }
         }
 
@@ -150,10 +150,10 @@ public class RetryableSavepointsAspect {
         }
     }
 
-    private void handleTransientException(Throwable ex, int numAttempts, int totalAttempts,
+    private void handleTransientException(Throwable ex, int numCalls, int totalAttempts, long maxBackoff,
                                           ProceedingJoinPoint pjp, AtomicLong backoffMillis) {
         if (logger.isWarnEnabled()) {
-            logger.warn("Transient data access exception (" + numAttempts + " of max " + totalAttempts + ") "
+            logger.warn("Transient data access exception (" + numCalls + " of max " + totalAttempts + ") "
                     + " (retry in " + backoffMillis + " ms) "
                     + "in method '" + pjp.getSignature().toShortString() + "': " + ex.getMessage());
         }
@@ -164,7 +164,7 @@ public class RetryableSavepointsAspect {
                 Thread.currentThread().interrupt();
                 e.printStackTrace();
             }
-            backoffMillis.set(Math.min((long) (backoffMillis.get() * 1.5), 5000));
+            backoffMillis.set(Math.min((long) (Math.pow(2, numCalls) + Math.random() * 1000), maxBackoff));
         }
     }
 

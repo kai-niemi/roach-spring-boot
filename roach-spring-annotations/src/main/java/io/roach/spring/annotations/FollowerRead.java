@@ -13,7 +13,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * A follower reads in CockroachDB represents a computed time interval
  * sufficiently in the past for reads to be served by closest follower replica.
  *
- * https://www.cockroachlabs.com/docs/v20.1/follower-reads.html
+ * https://www.cockroachlabs.com/docs/stable/follower-reads.html
+ *
+ * @author Kai Niemi
  */
 @Inherited
 @Documented

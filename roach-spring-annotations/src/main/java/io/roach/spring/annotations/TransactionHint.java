@@ -5,6 +5,11 @@ import java.lang.annotation.Target;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+/**
+ * Annotation for arbitrary transaction hints.
+ *
+ * @author Kai Niemi
+ */
 @Target({})
 @Retention(RUNTIME)
 public @interface TransactionHint {

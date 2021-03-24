@@ -12,11 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Indicates that the annotated class or method must not execute within a transaction context.
+ *
+ * @author Kai Niemi
  */
 @Inherited
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public @interface TransactionNotAllowed {
 }
