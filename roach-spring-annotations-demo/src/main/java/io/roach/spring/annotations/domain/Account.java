@@ -29,6 +29,16 @@ public class Account {
     @Column(length = 25, nullable = false)
     private BigDecimal balance;
 
+    protected Account() {
+    }
+
+    public Account(Long id, String name, AccountType type, BigDecimal balance) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.balance = balance;
+    }
+
     public Long getId() {
         return id;
     }

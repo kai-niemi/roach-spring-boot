@@ -7,6 +7,7 @@ Standalone server app demonstrating CockroachDB Spring Boot annotations.
 ## Prerequisites
 
 - JDK8+ with 1.8 language level (OpenJDK compatible)
+- Maven 3.1+ (optional)
 
 ## Database Setup
 
@@ -30,19 +31,18 @@ To build and deploy to your local Maven repo, execute:
 
 ## Stress Test
 
-Start server:    
+Start the server using JPA and Hibernate (default):    
     
     cd roach-spring-annotations-demo
     target/roach-spring-annotations-demo.jar
 
-_Alternative example with parameter overrides:_
+Alternatively, start the server using JDBC and savepoints for retries:
 
     java -jar target/roach-spring-annotations-demo.jar 
-    --server.port=9999 
-    --spring.profiles.active=none 
-    --spring.datasource.url=jdbc:postgresql://192.168.1.99:26257/roach_spring?sslmode=disable    
+    --spring.profiles.active=jdbc 
+    --roach.datasource.url=jdbc:postgresql://192.168.1.99:26257/roach_spring?sslmode=disable    
 
 Run a stress test by sending concurrent HTTP requests to `localhost:8090`:
 
-    ./mvnw -DskipTests=false -Dtest=io.roach.spring.annotations.StressTest -Dthreads=20 test
+    mvn -DskipTests=false -Dtest=io.roach.spring.annotations.StressTest -Dthreads=20 test
  

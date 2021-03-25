@@ -27,7 +27,7 @@ public class StressTest {
         final DemoHttpClient httpClient = new DemoHttpClient("http://localhost:8090");
         httpClient.reset();
 
-        int numThreads = Integer.parseInt(System.getProperty("threads", "1"));
+        int numThreads = Integer.parseInt(System.getProperty("threads", "20"));
         int cycles = Integer.parseInt(System.getProperty("cycles", "200"));
 
         // Use concurrent threads (>10) to cause transient serialization errors

@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -20,15 +21,22 @@ public class DataSourceConfig {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Bean
+    @ConfigurationProperties("roach.datasource")
     public DataSourceProperties dataSourceProperties() {
         return new DataSourceProperties();
     }
 
     @Bean
+    @ConfigurationProperties("roach.datasource.configuration")
+    public HikariDataSource primaryDataSource() {
+        return dataSourceProperties().initializeDataSourceBuilder()
+                .type(HikariDataSource.class).build();
+    }
+
+    @Bean
     @Primary
     public DataSource dataSource() {
-        HikariDataSource dataSource = dataSourceProperties().initializeDataSourceBuilder()
-                .type(HikariDataSource.class).build();
+        HikariDataSource dataSource = primaryDataSource();
 
         logger.info("Connection pool max size: {}", dataSource.getMaximumPoolSize());
         logger.info("Connection pool idle timeout: {}", dataSource.getIdleTimeout());

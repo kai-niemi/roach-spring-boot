@@ -14,25 +14,18 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import io.roach.spring.annotations.aspect.AdvisorOrder;
 
 @Configuration
 @EnableAutoConfiguration(exclude = {
         DataSourceAutoConfiguration.class
 })
-//@EnableConfigurationProperties
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
-@EnableJpaRepositories
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableSpringDataWebSupport
-@EnableTransactionManagement(order = AdvisorOrder.INNER_BOUNDARY)
 @ComponentScan(basePackageClasses = Application.class)
 public class Application implements CommandLineRunner {
     public static void main(String[] args) {

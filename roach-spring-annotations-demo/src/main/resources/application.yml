@@ -5,23 +5,12 @@
 
 spring:
   profiles:
-    active: crdb
+    active: jpa
   output:
     ansi:
       enabled: ALWAYS
   mvc:
     throw-exception-if-no-handler-found: true
-  datasource:
-    url: jdbc:postgresql://192.168.1.99:26257/roach_spring?sslmode=disable
-    driver-class-name: org.postgresql.Driver
-    username: root
-    password: 
-    hikari:
-      connection-test-query: SELECT 1
-      connection-timeout: 15000
-      validation-timeout: 5000
-      max-lifetime: 30000
-      maximum-pool-size: 25
   jpa:
     open-in-view: false
 server:
@@ -34,3 +23,15 @@ server:
 info:
   build:
     artifact: roach-spring-annotations
+roach:
+  datasource:
+    url: jdbc:postgresql://localhost:26257/roach_spring?sslmode=disable
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password:
+    configuration:
+      connection-test-query: SELECT 1
+      connection-timeout: 15000
+      validation-timeout: 5000
+      max-lifetime: 30000
+      maximum-pool-size: 25

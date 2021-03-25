@@ -46,7 +46,9 @@ public class AccountController {
     private PagedResourcesAssembler<Account> pagedResourcesAssembler;
 
     @GetMapping
-    @TransactionBoundary(readOnly = true,
+    // Overrides type level annotation
+    @TransactionBoundary(
+            readOnly = true,
             vectorize = TransactionBoundary.Vectorize.off,
             priority = TransactionBoundary.Priority.low)
     @TimeTravel
@@ -57,8 +59,7 @@ public class AccountController {
     }
 
     @GetMapping(value = "/{id}")
-    @TransactionBoundary(readOnly = true,
-            priority = TransactionBoundary.Priority.low)
+    @TransactionBoundary(priority = TransactionBoundary.Priority.low)
     @FollowerRead
     public HttpEntity<AccountModel> getAccount(@PathVariable("id") Long accountId) {
         return new ResponseEntity<>(accountResourceAssembler
