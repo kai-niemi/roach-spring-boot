@@ -1,5 +1,0 @@
-^__^
-(oo)\_______
-(__)\       )\/\   ${application.formatted-version}
-   ||----w |       powered by Spring Boot ${spring-boot.formatted-version}
-   ||     ||

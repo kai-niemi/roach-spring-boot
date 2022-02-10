@@ -1,0 +1,25 @@
+seattle
+san francisco
+los angeles
+phoenix
+minneapolis
+chicago
+detroit
+atlanta
+new york
+boston
+washington dc
+miami
+stockholm
+helsinki
+oslo
+frankfurt
+london
+amsterdam
+paris
+milano
+madrid
+athens
+singapore
+hong kong
+sydney

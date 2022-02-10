@@ -1,0 +1,46 @@
+########################
+# Spring boot properties
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+########################
+spring:
+  main:
+    allow-circular-references: true
+  profiles:
+    active:
+  output:
+    ansi:
+      enabled: ALWAYS
+  flyway:
+    # Manual trigger for all tenants
+    enabled: false
+    connect-retries: 50
+    clean-on-validation-error: true
+    baseline-on-migrate: true
+  jpa:
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.CockroachDB201Dialect
+#############################
+logging:
+  pattern:
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr([%logger{39}]){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+##############################
+roach:
+  datasources:
+    alpha:
+      url: jdbc:postgresql://localhost:26257/roach_spring_boot_alpha?sslmode=disable
+      driver-class-name: org.postgresql.Driver
+      username: root
+      password:
+    bravo:
+      url: jdbc:postgresql://localhost:26257/roach_spring_boot_bravo?sslmode=disable
+      driver-class-name: org.postgresql.Driver
+      username: root
+      password:
+    caesar:
+      url: jdbc:postgresql://localhost:26257/roach_spring_boot_caesar?sslmode=disable
+      driver-class-name: org.postgresql.Driver
+      username: root
+      password:
