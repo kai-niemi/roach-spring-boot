@@ -3,15 +3,15 @@ roach:
     alpha:
       url: jdbc:postgresql://kai-test-gc8.gcp-europe-west4.cockroachlabs.cloud:26257/spring_boot_tenant_alpha?sslmode=require
       driver-class-name: org.postgresql.Driver
-      username: test
-      password:
+      username: guest
+      password: ZV5W2am-Cdxyu01OClTlSQ
     bravo:
       url: jdbc:postgresql://kai-test-gc8.gcp-europe-west4.cockroachlabs.cloud:26257/spring_boot_tenant_bravo?sslmode=require
       driver-class-name: org.postgresql.Driver
-      username: test
-      password:
+      username: guest
+      password: ZV5W2am-Cdxyu01OClTlSQ
     caesar:
       url: jdbc:postgresql://kai-test-gc8.gcp-europe-west4.cockroachlabs.cloud:26257/spring_boot_tenant_caesar?sslmode=require
       driver-class-name: org.postgresql.Driver
-      username: test
-      password: 
+      username: guest
+      password: ZV5W2am-Cdxyu01OClTlSQ

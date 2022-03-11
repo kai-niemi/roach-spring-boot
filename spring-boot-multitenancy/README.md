@@ -36,3 +36,8 @@ Key takeaways:
 
     mvn -DskipTests=false test
     
+### Misc
+
+When using JDK 11+ and connecting against a secure CockroachDB cluster set the following VM option:
+
+    -Djdk.tls.client.protocols=TLSv1.2

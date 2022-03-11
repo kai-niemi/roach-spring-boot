@@ -10,7 +10,7 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import io.roach.spring.multitenancy.aspect.TenantScope;
-import io.roach.spring.multitenancy.config.TenantRegistry;
+import io.roach.spring.multitenancy.config.TenantContext;
 
 public class CustomTestExecutionListener extends AbstractTestExecutionListener implements Ordered {
     @Override
@@ -19,18 +19,18 @@ public class CustomTestExecutionListener extends AbstractTestExecutionListener i
     }
 
     @Override
-    public void beforeTestMethod(TestContext testContext) throws Exception {
+    public void beforeTestMethod(TestContext testContext) {
         Method testMethod = testContext.getTestMethod();
         TenantScope tc = AnnotationUtils.getAnnotation(testMethod, TenantScope.class);
         if (tc != null) {
             Assertions.assertFalse(TransactionSynchronizationManager.isActualTransactionActive(),
                     "Transaction not expected here");
-            TenantRegistry.setTenantId(tc.value());
+            TenantContext.setTenantId(tc.value());
         }
     }
 
     @Override
     public void afterTestMethod(TestContext testContext) throws Exception {
-        TenantRegistry.clear();
+        TenantContext.clear();
     }
 }

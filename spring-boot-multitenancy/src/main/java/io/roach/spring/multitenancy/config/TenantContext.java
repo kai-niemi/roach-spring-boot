@@ -3,18 +3,18 @@ package io.roach.spring.multitenancy.config;
 /**
  * Thread local registry for tenant IDs
  */
-public abstract class TenantRegistry {
-    private TenantRegistry() {
+public abstract class TenantContext {
+    private TenantContext() {
     }
 
     // Thread local variable containing each thread's ID
-    private static final ThreadLocal<TenantName> threadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<Tenant> threadLocal = new ThreadLocal<>();
 
-    public static void setTenantId(TenantName tenantId) {
+    public static void setTenantId(Tenant tenantId) {
         threadLocal.set(tenantId);
     }
 
-    public static TenantName getTenantId() {
+    public static Tenant getTenantId() {
         return threadLocal.get();
     }
 

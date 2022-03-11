@@ -28,17 +28,16 @@ public class TenantDataSourceProperties {
     }
 
     public Object getDefaultDataSource() {
-        return dataSources.get(TenantName.alpha);
+        return dataSources.get(Tenant.alpha);
     }
 
     public void setDataSources(Map<String, DataSourceProperties> properties) {
-        properties.forEach((key, value) -> this.dataSources.put(
-                key,
-                createDataSource(key, value))
+        properties.forEach((key, value) ->
+                this.dataSources.put(key, createDataSource(key, value))
         );
     }
 
-    public DataSource createDataSource(String poolName, DataSourceProperties properties) {
+    private DataSource createDataSource(String poolName, DataSourceProperties properties) {
         int poolSize = Runtime.getRuntime().availableProcessors() * 4;
 
         HikariDataSource ds = properties
@@ -61,7 +60,7 @@ public class TenantDataSourceProperties {
                 ? ProxyDataSourceBuilder
                 .create(ds)
                 .asJson()
-                .countQuery()
+//                .countQuery()
                 .logQueryBySlf4j(SLF4JLogLevel.TRACE, traceLogger.getName())
                 .build()
                 : ds;

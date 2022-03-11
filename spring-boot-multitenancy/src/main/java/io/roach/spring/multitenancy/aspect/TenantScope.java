@@ -7,12 +7,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import io.roach.spring.multitenancy.config.TenantName;
+import io.roach.spring.multitenancy.config.Tenant;
 
 @Inherited
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface TenantScope {
-    TenantName value() default TenantName.alpha;
+    Tenant value() default Tenant.alpha;
 }

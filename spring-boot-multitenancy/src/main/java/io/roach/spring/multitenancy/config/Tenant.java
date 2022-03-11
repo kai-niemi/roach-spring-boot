@@ -1,6 +1,6 @@
 package io.roach.spring.multitenancy.config;
 
-public enum TenantName {
+public enum Tenant {
     alpha,
     bravo,
     caesar

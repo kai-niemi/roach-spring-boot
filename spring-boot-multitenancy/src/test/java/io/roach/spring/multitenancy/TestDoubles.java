@@ -95,6 +95,7 @@ public class TestDoubles {
                     .withQuantity(RandomData.randomInt(2, 10))
                     .then()
                     .build();
+
             callback.accept(o);
         });
     }

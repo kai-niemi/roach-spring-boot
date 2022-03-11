@@ -19,8 +19,8 @@ import io.roach.spring.multitenancy.AbstractIntegrationTest;
 import io.roach.spring.multitenancy.ProfileNames;
 import io.roach.spring.multitenancy.TestDoubles;
 import io.roach.spring.multitenancy.aspect.TenantScope;
-import io.roach.spring.multitenancy.config.TenantName;
-import io.roach.spring.multitenancy.config.TenantRegistry;
+import io.roach.spring.multitenancy.config.Tenant;
+import io.roach.spring.multitenancy.config.TenantContext;
 import io.roach.spring.multitenancy.domain.Product;
 import io.roach.spring.multitenancy.repository.CustomerRepository;
 import io.roach.spring.multitenancy.repository.OrderRepository;
@@ -48,8 +48,8 @@ public class MultiTenancyTest extends AbstractIntegrationTest {
 
     @BeforeAll
     public void setupTest() {
-        Arrays.stream(TenantName.values()).forEach(tenant -> {
-            TenantRegistry.setTenantId(tenant);
+        Arrays.stream(Tenant.values()).forEach(tenant -> {
+            TenantContext.setTenantId(tenant);
             testDoubles.removeTestDoubles();
         });
     }
@@ -58,7 +58,7 @@ public class MultiTenancyTest extends AbstractIntegrationTest {
     @TransactionBoundary
     @Commit
     @Order(1)
-    @TenantScope(TenantName.alpha)
+    @TenantScope(Tenant.alpha)
     public void whenCreatingProductInventory_thenStoreInSingleTenancy() {
         Assertions.assertTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
 
@@ -72,7 +72,7 @@ public class MultiTenancyTest extends AbstractIntegrationTest {
     @Test
     @TransactionBoundary(readOnly = true)
     @Order(2)
-    @TenantScope(TenantName.alpha)
+    @TenantScope(Tenant.alpha)
     public void whenRetrievingProductsFromPrimaryTenant_thenReturnCorrectAmount() {
         Assertions.assertTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
         Assertions.assertEquals(numProducts, productRepository.count());
@@ -81,7 +81,7 @@ public class MultiTenancyTest extends AbstractIntegrationTest {
     @Test
     @TransactionBoundary(readOnly = true)
     @Order(3)
-    @TenantScope(TenantName.bravo)
+    @TenantScope(Tenant.bravo)
     public void whenRetrievingProductsFromOtherTenant_thenReturnZeroAmount() {
         Assertions.assertTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
         Assertions.assertEquals(0, productRepository.count());
@@ -91,39 +91,57 @@ public class MultiTenancyTest extends AbstractIntegrationTest {
     @TransactionBoundary
     @Commit
     @Order(4)
-    @TenantScope
+    @TenantScope(Tenant.alpha)
     public void whenCreatingCustomers_thenStoreInPrimaryTenancy() {
         Assertions.assertTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
-        createCustomers();
+        createCustomers(numCustomers + 1);
     }
 
     @Test
     @TransactionBoundary
     @Commit
     @Order(5)
-    @TenantScope(TenantName.bravo)
+    @TenantScope(Tenant.bravo)
     public void whenCreatingCustomers_thenStoreInSecondTenancy() {
         Assertions.assertTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
-        createCustomers();
+        createCustomers(numCustomers + 2);
     }
 
     @Test
     @TransactionBoundary
     @Commit
     @Order(6)
-    @TenantScope(TenantName.caesar)
+    @TenantScope(Tenant.caesar)
     public void whenCreatingCustomers_thenStoreInThirdTenancy() {
         Assertions.assertTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
-        createCustomers();
+        createCustomers(numCustomers + 3);
     }
 
     @Test
     @TransactionBoundary(readOnly = true)
     @Order(7)
-    @TenantScope
+    @TenantScope(Tenant.alpha)
     public void whenRetrievingCustomersFromPrimaryTenant_thenReturnCorrectAmount() {
         Assertions.assertTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
-        Assertions.assertEquals(numCustomers, customerRepository.count());
+        Assertions.assertEquals(numCustomers + 1, customerRepository.count());
+    }
+
+    @Test
+    @TransactionBoundary(readOnly = true)
+    @Order(7)
+    @TenantScope(Tenant.bravo)
+    public void whenRetrievingCustomersFromSecondTenant_thenReturnCorrectAmount() {
+        Assertions.assertTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
+        Assertions.assertEquals(numCustomers + 2, customerRepository.count());
+    }
+
+    @Test
+    @TransactionBoundary(readOnly = true)
+    @Order(7)
+    @TenantScope(Tenant.caesar)
+    public void whenRetrievingCustomersFromThirdTenant_thenReturnCorrectAmount() {
+        Assertions.assertTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
+        Assertions.assertEquals(numCustomers + 3, customerRepository.count());
     }
 
     @Test
@@ -133,7 +151,7 @@ public class MultiTenancyTest extends AbstractIntegrationTest {
     @TenantScope
     public void whenCreatingOrders_thenStoreInPrimaryTenancy() {
         Assertions.assertTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
-        createOrders();
+        createOrders(numOrders);
     }
 
     @Test
@@ -146,12 +164,12 @@ public class MultiTenancyTest extends AbstractIntegrationTest {
         Assertions.assertTrue(orderRepository.getTotalOrderPrice().longValue() > 0);
     }
 
-    private void createCustomers() {
-        IntStream.rangeClosed(1, numCustomers).forEach(value -> customerRepository.save(testDoubles.newCustomer()));
+    private void createCustomers(int count) {
+        IntStream.rangeClosed(1, count).forEach(value -> customerRepository.save(testDoubles.newCustomer()));
     }
 
-    private void createOrders() {
-        testDoubles.newOrders(numOrders, order -> {
+    private void createOrders(int count) {
+        testDoubles.newOrders(count, order -> {
             orderRepository.save(order);
         });
     }

@@ -9,26 +9,25 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.util.Assert;
 
 import io.roach.spring.annotations.aspect.AdvisorOrder;
-import io.roach.spring.multitenancy.config.TenantRegistry;
+import io.roach.spring.multitenancy.config.TenantContext;
 
 @Aspect
 @Order(AdvisorOrder.HIGHEST)
-@Deprecated // Not used
 public class TenantContextAspect {
     @Pointcut("@annotation(tenantContext)")
-    public void anyTenantOperation(TenantScope tenantContext) {
+    public void anyMultiTenantOperation(TenantScope tenantContext) {
     }
 
-    @Around(value = "anyTenantOperation(tenantContext)",
+    @Around(value = "anyMultiTenantOperation(tenantContext)",
             argNames = "pjp,tenantContext")
     public Object aroundAnyMultiTenantOperation(ProceedingJoinPoint pjp, TenantScope tenantContext)
             throws Throwable {
         Assert.isTrue(!TransactionSynchronizationManager.isActualTransactionActive(), "Transaction not supported");
-        TenantRegistry.setTenantId(tenantContext.value());
+        TenantContext.setTenantId(tenantContext.value());
         try {
             return pjp.proceed();
         } finally {
-            TenantRegistry.clear();
+            TenantContext.clear();
         }
     }
 }
