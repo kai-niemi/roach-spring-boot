@@ -9,6 +9,7 @@ import org.hibernate.cache.internal.NoCachingRegionFactory;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.CockroachDB201Dialect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -21,9 +22,9 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-public abstract class AbstractDataSourceConfiguration {
-    //    @Value("${roach.batch-size}")
-    private int batchSize = 12;
+public class JpaConfiguration {
+    @Value("${roach.batch-size}")
+    private int batchSize;
 
     @Bean
     public PersistenceExceptionTranslationPostProcessor persistenceExceptionTranslationPostProcessor() {

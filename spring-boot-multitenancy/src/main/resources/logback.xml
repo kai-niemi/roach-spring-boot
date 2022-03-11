@@ -5,7 +5,7 @@
     <logger name="org.springframework.transaction" level="TRACE"/>
     <logger name="org.springframework.orm" level="TRACE"/>
 
-    <logger name="io.roach" level="DEBUG"/>
+    <logger name="io.roach" level="TRACE"/>
     <logger name="io.roach.SQL_TRACE" level="TRACE"/>
 
     <root level="INFO"/>

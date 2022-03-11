@@ -51,6 +51,11 @@ public class RetryableAspect {
         do {
             try {
                 numCalls++;
+
+                logger.trace(
+                        "Calling transaction boundary " + pjp.getSignature().toShortString() + ": attempt " + numCalls + " of "
+                                + transactionBoundary.retryAttempts());
+
                 Object rv = pjp.proceed();
                 if (numCalls > 1) {
                     logger.info(

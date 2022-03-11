@@ -26,7 +26,7 @@ Key takeaways:
 
 - JDK8+ with 1.8 language level (OpenJDK compatible)
 - Maven 3+ (wrapper provided)
-- CockroachDB with 3 databases named `roach_spring_boot_alpha`,`roach_spring_boot_bravo` and `roach_spring_boot_caesar`
+- CockroachDB with 3 databases named `spring_boot_tenant_alpha`,`spring_boot_tenant_bravo` and `spring_boot_tenant_caesar`
 
 ### Building
 

@@ -11,10 +11,12 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import io.roach.spring.annotations.TransactionBoundary;
 import io.roach.spring.multitenancy.AbstractIntegrationTest;
+import io.roach.spring.multitenancy.ProfileNames;
 import io.roach.spring.multitenancy.TestDoubles;
 import io.roach.spring.multitenancy.aspect.TenantScope;
 import io.roach.spring.multitenancy.config.TenantName;
@@ -24,6 +26,7 @@ import io.roach.spring.multitenancy.repository.CustomerRepository;
 import io.roach.spring.multitenancy.repository.OrderRepository;
 import io.roach.spring.multitenancy.repository.ProductRepository;
 
+@ActiveProfiles({ProfileNames.CLOUD})
 public class MultiTenancyTest extends AbstractIntegrationTest {
     private final int numProducts = 100;
 
@@ -55,7 +58,7 @@ public class MultiTenancyTest extends AbstractIntegrationTest {
     @TransactionBoundary
     @Commit
     @Order(1)
-    @TenantScope
+    @TenantScope(TenantName.alpha)
     public void whenCreatingProductInventory_thenStoreInSingleTenancy() {
         Assertions.assertTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
 
@@ -69,7 +72,7 @@ public class MultiTenancyTest extends AbstractIntegrationTest {
     @Test
     @TransactionBoundary(readOnly = true)
     @Order(2)
-    @TenantScope
+    @TenantScope(TenantName.alpha)
     public void whenRetrievingProductsFromPrimaryTenant_thenReturnCorrectAmount() {
         Assertions.assertTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
         Assertions.assertEquals(numProducts, productRepository.count());

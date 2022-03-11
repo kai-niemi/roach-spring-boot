@@ -1,17 +1,17 @@
 roach:
   datasources:
     alpha:
-      url: jdbc:postgresql://192.168.1.99:26300/roach_spring_boot_alpha?sslmode=disable
+      url: jdbc:postgresql://192.168.1.99:26300/spring_boot_tenant_alpha?sslmode=disable
       driver-class-name: org.postgresql.Driver
       username: root
       password:
     bravo:
-      url: jdbc:postgresql://192.168.1.99:26300/roach_spring_boot_bravo?sslmode=disable
+      url: jdbc:postgresql://192.168.1.99:26300/spring_boot_tenant_bravo?sslmode=disable
       driver-class-name: org.postgresql.Driver
       username: root
       password:
     caesar:
-      url: jdbc:postgresql://192.168.1.99:26300/roach_spring_boot_caesar?sslmode=disable
+      url: jdbc:postgresql://192.168.1.99:26300/spring_boot_tenant_caesar?sslmode=disable
       driver-class-name: org.postgresql.Driver
       username: root
       password:

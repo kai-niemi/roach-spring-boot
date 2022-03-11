@@ -19,8 +19,6 @@ import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 @Component
 @ConfigurationProperties(prefix = "roach")
 public class TenantDataSourceProperties {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private final Logger traceLogger = LoggerFactory.getLogger("io.roach.SQL_TRACE");
 
     private final Map<Object, Object> dataSources = new LinkedHashMap<>();
@@ -52,16 +50,12 @@ public class TenantDataSourceProperties {
         ds.setMinimumIdle(poolSize / 2); // Should be maxPoolSize for fixed-sized pool
         ds.setAutoCommit(false);
 
+        ds.addDataSourceProperty("reWriteBatchedInserts", "true");
+        ds.addDataSourceProperty("cachePrepStmts", "true");
+        ds.addDataSourceProperty("prepStmtCacheSize", "250");
+        ds.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        ds.addDataSourceProperty("useServerPrepStmts", "true");
         ds.addDataSourceProperty("application_name", "Multi-Tenancy Demo");
-        ds.addDataSourceProperty("reWriteBatchedInserts", "true"); // case sensitive
-//        ds.addDataSourceProperty("cachePrepStmts", "true");
-//        ds.addDataSourceProperty("prepStmtCacheSize", "250");
-//        ds.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-//        ds.addDataSourceProperty("useServerPrepStmts", "true");
-
-        if (traceLogger.isTraceEnabled()) {
-            logger.warn("Verbose datasource trace logging enabled for tenant '{}'", poolName);
-        }
 
         return traceLogger.isTraceEnabled()
                 ? ProxyDataSourceBuilder

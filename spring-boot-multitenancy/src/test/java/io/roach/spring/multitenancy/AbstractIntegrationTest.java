@@ -16,7 +16,6 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ActiveProfiles({ProfileNames.DEV})
 @TestExecutionListeners({
         CustomTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class,
