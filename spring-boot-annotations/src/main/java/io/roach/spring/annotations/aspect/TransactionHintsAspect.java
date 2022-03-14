@@ -77,7 +77,7 @@ public class TransactionHintsAspect {
         }
 
         if (transactionBoundary.readOnly()) {
-            jdbcTemplate.execute("SET transaction_read_only=true");
+//            jdbcTemplate.execute("SET transaction_read_only=true");
         }
 
         if (transactionBoundary.followerRead()) {

@@ -1,7 +1,9 @@
 package io.roach.spring.multitenancy.config;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -23,6 +25,8 @@ public class TenantDataSourceProperties {
 
     private final Map<Object, Object> dataSources = new LinkedHashMap<>();
 
+    private final Set<String> readOnlyNames = new HashSet<>();
+
     public Map<Object, Object> getDataSources() {
         return dataSources;
     }
@@ -37,6 +41,10 @@ public class TenantDataSourceProperties {
         );
     }
 
+    public boolean isReadOnly(String poolName) {
+         return readOnlyNames.contains(poolName);
+    }
+
     private DataSource createDataSource(String poolName, DataSourceProperties properties) {
         int poolSize = Runtime.getRuntime().availableProcessors() * 4;
 
@@ -49,6 +57,11 @@ public class TenantDataSourceProperties {
         ds.setMinimumIdle(poolSize / 2); // Should be maxPoolSize for fixed-sized pool
         ds.setAutoCommit(false);
 
+        if (poolName.endsWith("readonly")) { // naming convention
+            ds.setReadOnly(true);
+            readOnlyNames.add(poolName);
+        }
+
         ds.addDataSourceProperty("reWriteBatchedInserts", "true");
         ds.addDataSourceProperty("cachePrepStmts", "true");
         ds.addDataSourceProperty("prepStmtCacheSize", "250");
@@ -60,7 +73,6 @@ public class TenantDataSourceProperties {
                 ? ProxyDataSourceBuilder
                 .create(ds)
                 .asJson()
-//                .countQuery()
                 .logQueryBySlf4j(SLF4JLogLevel.TRACE, traceLogger.getName())
                 .build()
                 : ds;

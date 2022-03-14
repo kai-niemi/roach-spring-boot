@@ -49,8 +49,10 @@ public class MultiTenancyTest extends AbstractIntegrationTest {
     @BeforeAll
     public void setupTest() {
         Arrays.stream(Tenant.values()).forEach(tenant -> {
-            TenantContext.setTenantId(tenant);
-            testDoubles.removeTestDoubles();
+            if (tenant.isVersioned()) {
+                TenantContext.setTenantId(tenant);
+                testDoubles.deleteTestDoubles();
+            }
         });
     }
 

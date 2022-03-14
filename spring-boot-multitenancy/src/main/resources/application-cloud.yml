@@ -15,3 +15,8 @@ roach:
       driver-class-name: org.postgresql.Driver
       username: guest
       password: ZV5W2am-Cdxyu01OClTlSQ
+    alpha_readonly:
+      url: jdbc:postgresql://kai-test-gc8.gcp-europe-west4.cockroachlabs.cloud:26257/spring_boot_tenant_alpha?sslmode=require&options=-c%20default_transaction_read_only=true
+      driver-class-name: org.postgresql.Driver
+      username: guest
+      password: ZV5W2am-Cdxyu01OClTlSQ

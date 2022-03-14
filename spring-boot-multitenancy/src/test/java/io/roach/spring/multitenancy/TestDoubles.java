@@ -31,7 +31,7 @@ public class TestDoubles {
     private OrderRepository orderRepository;
 
     @TransactionBoundary
-    public void removeTestDoubles() {
+    public void deleteTestDoubles() {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
 
         orderRepository.findAll().forEach(order -> orderRepository.deleteOrderItems(order.getId()));

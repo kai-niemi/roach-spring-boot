@@ -22,7 +22,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-public class JpaConfiguration {
+public class PersistenceConfiguration {
     @Value("${roach.batch-size}")
     private int batchSize;
 

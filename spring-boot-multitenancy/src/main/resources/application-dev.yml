@@ -15,3 +15,8 @@ roach:
       driver-class-name: org.postgresql.Driver
       username: root
       password:
+    alpha_readonly:
+      url: jdbc:postgresql://192.168.1.99:26300/spring_boot_tenant_alpha?sslmode=disable&options=-c%20default_transaction_read_only=true
+      driver-class-name: org.postgresql.Driver
+      username: root
+      password:
