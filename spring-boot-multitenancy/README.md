@@ -12,8 +12,9 @@ Key takeaways:
 - Transaction propagation attributes following entity-control-boundary
 - Flyway to migrate multi-tenant schemas
 
-## Relevant Articles:
+## Relevant Articles
 
+- [Multitenancy Applications with Spring Boot and CockroachDB](https://blog.cloudneutral.se/multitenancy-applications-with-spring-boot-and-cockroachdb)
 - [Spring Annotations for CockroachDB](https://blog.cloudneutral.se/spring-annotations-for-cockroachdb)
 
 ## ER model
