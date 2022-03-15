@@ -1,0 +1,32 @@
+########################
+# Spring boot properties
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+########################
+spring:
+  main:
+    allow-circular-references: true
+  profiles:
+    active: local,crdb
+  output:
+    ansi:
+      enabled: ALWAYS
+  flyway:
+    enabled: true
+    clean-on-validation-error: true
+    baseline-on-migrate: true
+  jpa:
+    open-in-view: false
+    show-sql: false
+  datasource:
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 50
+    driver-class-name: org.postgresql.Driver
+#############################
+logging:
+  pattern:
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr([%logger{39}]){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+#############################
+roach:
+  batch-size: 24
+  multi-value-inserts: true

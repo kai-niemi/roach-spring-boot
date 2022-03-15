@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://192.168.1.99:26300/spring_boot_batch?sslmode=disable
+    username: root
+    password:

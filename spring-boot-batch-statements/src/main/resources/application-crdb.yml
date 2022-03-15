@@ -1,0 +1,10 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.CockroachDB201Dialect
+  datasource:
+    url: jdbc:postgresql://localhost:26257/spring_boot_batch?sslmode=disable
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password:

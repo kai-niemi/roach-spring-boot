@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <springProfile name="(local | dev | cloud) &amp; verbose">
+        <logger name="org.springframework.transaction.interceptor" level="TRACE"/>
+        <logger name="org.springframework.orm.jpa" level="TRACE"/>
+        <logger name="io.roach" level="TRACE"/>
+        <logger name="io.roach.SQL_TRACE" level="TRACE"/>
+    </springProfile>
+
+    <springProfile name="(local | dev | cloud) &amp; !verbose">
+        <logger name="org.springframework" level="INFO"/>
+        <logger name="io.roach" level="INFO"/>
+        <logger name="io.roach.SQL_TRACE" level="INFO"/>
+    </springProfile>
+
+    <root level="INFO"/>
+</configuration>
+
