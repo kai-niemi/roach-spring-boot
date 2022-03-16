@@ -14,6 +14,7 @@ import org.springframework.core.NestedExceptionUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.dao.TransientDataAccessException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.TransactionSystemException;
 
 import io.roach.spring.annotations.TransactionBoundary;
@@ -64,7 +65,7 @@ public class RetryableAspect {
                                     + Duration.between(callTime, Instant.now()).toString() + ")");
                 }
                 return rv;
-            } catch (TransientDataAccessException | TransactionSystemException ex) { // TX abort on commit's
+            } catch (TransientDataAccessException | TransactionSystemException | JpaSystemException ex) { // TX abort on commit's
                 Throwable cause = NestedExceptionUtils.getMostSpecificCause(ex);
                 if (cause instanceof SQLException) {
                     SQLException sqlException = (SQLException) cause;

@@ -55,7 +55,7 @@ public class TestDoubles {
                 .withName("CockroachDB Unleashed - First Edition")
                 .withPrice(RandomData.randomMoneyBetween(20, 500, 2))
                 .withSku(RandomData.randomWord(12))
-                .withQuantity(RandomData.randomInt(500, 1500))
+                .withQuantity(RandomData.randomInt(3000, 9000))
                 .build();
     }
 
