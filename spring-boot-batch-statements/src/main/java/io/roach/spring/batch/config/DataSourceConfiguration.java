@@ -1,7 +1,9 @@
 package io.roach.spring.batch.config;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +25,24 @@ public class DataSourceConfiguration {
     @Value("${roach.multi-value-inserts}")
     private boolean multiValueInserts;
 
+    @Autowired
+    private DataSourceProperties properties;
+
     @Bean
     @Primary
-    public DataSource primaryDataSource(@Autowired DataSourceProperties properties) {
+    public DataSource primaryDataSource() {
+        HikariDataSource ds = hikariDataSource();
+        return traceLogger.isTraceEnabled()
+                ? ProxyDataSourceBuilder
+                .create(ds)
+                .asJson()
+                .logQueryBySlf4j(SLF4JLogLevel.TRACE, traceLogger.getName())
+                .build()
+                : ds;
+    }
+
+    @Bean
+    public HikariDataSource hikariDataSource() {
         int poolSize = Runtime.getRuntime().availableProcessors() * 2;
 
         HikariDataSource ds = properties
@@ -44,12 +61,15 @@ public class DataSourceConfiguration {
         ds.addDataSourceProperty("useServerPrepStmts", "true");
         ds.addDataSourceProperty("application_name", "Spring Batch Statements");
 
-        return traceLogger.isTraceEnabled()
-                ? ProxyDataSourceBuilder
-                .create(ds)
-                .asJson()
-                .logQueryBySlf4j(SLF4JLogLevel.TRACE, traceLogger.getName())
-                .build()
-                : ds;
+        return ds;
+    }
+
+    @PostConstruct
+    public void flywayMigrate() {
+        Flyway flyway = Flyway.configure()
+                .dataSource(hikariDataSource())
+                .load();
+        flyway.repair();
+        flyway.migrate();
     }
 }

@@ -24,14 +24,14 @@ create table order_items
     primary key (order_id, item_pos)
 );
 
-create type if not exists shipment_status as enum ('placed', 'confirmed', 'cancelled','delivered');
+create type shipment_status as enum ('placed', 'confirmed', 'cancelled','delivered');
 
 create table orders
 (
     id             uuid            not null default gen_random_uuid(),
     customer_id    uuid            not null,
     total_price    numeric(19, 2)  not null,
-    tags           string(128)     null,
+    tags           varchar(128)     null,
     status         shipment_status not null default 'placed',
     date_placed    timestamptz     not null default clock_timestamp(),
     date_updated   timestamptz     not null default clock_timestamp(),
@@ -49,9 +49,9 @@ create table products
 (
     id        uuid           not null default gen_random_uuid(),
     inventory int            not null,
-    name      string(128)    not null,
+    name      varchar(128)    not null,
     price     numeric(19, 2) not null,
-    sku       string(128)    not null unique,
+    sku       varchar(128)    not null unique,
     primary key (id)
 );
 

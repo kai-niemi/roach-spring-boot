@@ -5,5 +5,5 @@ import org.springframework.test.context.ActiveProfiles;
 import io.roach.spring.batch.ProfileNames;
 
 @ActiveProfiles({ProfileNames.CRDB_DEV, ProfileNames.DISABLE_BATCH})
-public class DisabledBatchStatementsTest extends AbstractBatchStatementsTest {
+public class DisabledBatchStatementsTest extends BatchStatementsTest {
 }

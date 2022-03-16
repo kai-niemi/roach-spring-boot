@@ -11,7 +11,7 @@ spring:
     ansi:
       enabled: ALWAYS
   flyway:
-    enabled: true
+    enabled: false
     clean-on-validation-error: true
     baseline-on-migrate: true
   jpa:
@@ -25,7 +25,7 @@ spring:
 #############################
 logging:
   pattern:
-    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr([%logger{39}]){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr([%logger{39}]){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
 #############################
 roach:
   batch-size: 24
