@@ -1,6 +1,5 @@
 package io.roach.spring.pagination.repository;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -18,9 +17,6 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     @Modifying
     @Query(value = "delete from order_items where order_id=:orderId", nativeQuery = true)
     void deleteOrderItems(@Param("orderId") UUID orderId);
-
-    @Query(value = "select sum(o.totalPrice) from Order o")
-    BigDecimal getTotalOrderPrice();
 
     @Query(value = "select o from Order o "
             + "join o.customer c "

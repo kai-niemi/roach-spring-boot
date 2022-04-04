@@ -1,5 +1,5 @@
 ^__^
-(oo)\_______       CockroachDB Spring Boot :: Multi Tenancy Tutorial
+(oo)\_______       CockroachDB Spring Boot :: Pagination
 (__)\       )\/\   ${application.formatted-version} powered by Spring Boot ${spring-boot.formatted-version}
    ||----w |
    ||     ||
