@@ -32,9 +32,6 @@ public class TransactionHintsAspect {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    //    @Value("${info.build.artifact}")
-    private String applicationName = "UNNAMED";
-
     @Around(value = "Pointcuts.anyTransactionBoundaryOperation(transactionBoundary)",
             argNames = "pjp,transactionBoundary")
     public Object aroundTransactionalMethod(ProceedingJoinPoint pjp, TransactionBoundary transactionBoundary)
@@ -58,9 +55,7 @@ public class TransactionHintsAspect {
     }
 
     private void applyVariables(TransactionBoundary transactionBoundary) {
-        if ("(none)".equals(transactionBoundary.applicationName())) {
-            jdbcTemplate.update("SET application_name=?", applicationName);
-        } else if (!"".equals(transactionBoundary.applicationName())) {
+        if (!"".equals(transactionBoundary.applicationName())) {
             jdbcTemplate.update("SET application_name=?", transactionBoundary.applicationName());
         }
 
@@ -85,9 +80,10 @@ public class TransactionHintsAspect {
                 jdbcTemplate.execute(
                         "SET TRANSACTION AS OF SYSTEM TIME follower_read_timestamp()");
             } else {
-                jdbcTemplate.execute(
-                        "SET TRANSACTION AS OF SYSTEM TIME with_max_staleness('"
-                                + transactionBoundary.followerReadStaleness() + "')");
+                throw new UnsupportedOperationException("Bounded staleness reads must use implicit transactions");
+//                jdbcTemplate.execute(
+//                        "SET TRANSACTION AS OF SYSTEM TIME with_max_staleness('"
+//                                + transactionBoundary.followerReadStaleness() + "')");
             }
         } else {
             if (!"(none)".equals(transactionBoundary.timeTravel())) {

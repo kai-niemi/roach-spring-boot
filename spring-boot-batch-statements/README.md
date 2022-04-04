@@ -20,7 +20,7 @@ Key takeaways:
 
 - JDK8+ with 1.8 language level (OpenJDK compatible)
 - Maven 3+ (wrapper provided)
-- CockroachDB with a database named `spring_boot_batch`
+- CockroachDB with a database named `spring_boot`
 
 ### Building
 

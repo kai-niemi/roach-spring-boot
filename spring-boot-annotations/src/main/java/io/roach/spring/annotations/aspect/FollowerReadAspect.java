@@ -30,8 +30,9 @@ public class FollowerReadAspect {
             jdbcTemplate.execute(
                     "SET TRANSACTION AS OF SYSTEM TIME follower_read_timestamp()");
         } else {
-            jdbcTemplate.execute(
-                    "SET TRANSACTION AS OF SYSTEM TIME with_max_staleness('" + followerRead.staleness() + "')");
+            throw new UnsupportedOperationException("Bounded staleness reads must use implicit transactions");
+//            jdbcTemplate.execute(
+//                    "SET TRANSACTION AS OF SYSTEM TIME with_max_staleness('" + followerRead.staleness() + "')");
         }
     }
 }

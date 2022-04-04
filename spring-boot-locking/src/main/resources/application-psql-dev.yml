@@ -1,0 +1,10 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+  datasource:
+    url: jdbc:postgresql://192.168.1.99:5432/spring_boot
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: root

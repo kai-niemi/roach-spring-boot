@@ -13,7 +13,7 @@ A standalone spring boot app demonstrating CockroachDB related annotations.
 
 Create the database to run test against:
 
-    CREATE database spring_boot_annotations;
+    CREATE database spring_boot;
     
 ## Building and running from codebase
 
@@ -40,7 +40,7 @@ Alternatively, start the server using JDBC, a custom URL and savepoints for retr
 
     java -jar target/spring-boot-annotations-demo.jar \ 
     --spring.profiles.active=jdbc,savepoints \ 
-    --roach.datasource.url=jdbc:postgresql://192.168.1.2:26257/spring_boot_annotations?sslmode=disable    
+    --roach.datasource.url=jdbc:postgresql://192.168.1.2:26257/spring_boot?sslmode=disable    
 
 Run a stress test by sending concurrent HTTP requests to `localhost:8090`:
 

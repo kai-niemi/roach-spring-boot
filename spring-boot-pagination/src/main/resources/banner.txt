@@ -1,0 +1,5 @@
+^__^
+(oo)\_______       CockroachDB Spring Boot :: Multi Tenancy Tutorial
+(__)\       )\/\   ${application.formatted-version} powered by Spring Boot ${spring-boot.formatted-version}
+   ||----w |
+   ||     ||

@@ -1,0 +1,55 @@
+########################
+# Spring boot properties
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+########################
+spring:
+  main:
+    allow-circular-references: true
+  profiles:
+    active:
+  output:
+    ansi:
+      enabled: ALWAYS
+  jackson:
+    serialization:
+      indent_output: true
+      write_dates_as_timestamps: false
+    deserialization:
+      fail_on_unknown_properties: false
+      fail_on_ignored_properties: false
+    default-property-inclusion: non_null
+    locale: en_US
+  mvc:
+    throw-exception-if-no-handler-found: true
+  flyway:
+    # Manual trigger for all tenants
+    enabled: false
+    connect-retries: 50
+    clean-on-validation-error: true
+    baseline-on-migrate: true
+  jpa:
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.CockroachDB201Dialect
+  datasource:
+    url: jdbc:postgresql://localhost:26257/spring_boot?sslmode=disable
+#    url: jdbc:postgresql://192.168.1.99:26300/spring_boot?sslmode=disable
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password:
+##################################
+server:
+  port: 8080
+  error:
+    whitelabel:
+      enabled: false
+    include-stacktrace: always
+  jetty:
+    threads:
+      max: 250
+#############################
+logging:
+  pattern:
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr([%logger{39}]){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"

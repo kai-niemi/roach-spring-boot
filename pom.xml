@@ -25,6 +25,8 @@
         <module>spring-boot-annotations-demo</module>
         <module>spring-boot-multitenancy</module>
         <module>spring-boot-batch-statements</module>
+        <module>spring-boot-locking</module>
+        <module>spring-boot-pagination</module>
     </modules>
 
     <dependencyManagement>
