@@ -15,6 +15,7 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,6 +60,7 @@ public class OrderController {
 
     @GetMapping(value = "/{id}")
     @TransactionBoundary(readOnly = true)
+    @Retryable
     public HttpEntity<OrderModel> getOrder(@PathVariable("id") UUID orderId) {
         return ResponseEntity.ok(orderModelAssembler().toModel(orderRepository.getById(orderId)));
     }

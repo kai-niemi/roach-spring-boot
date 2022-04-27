@@ -15,6 +15,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.core.Ordered;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.annotation.RetryConfiguration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import io.roach.spring.annotations.aspect.AdvisorOrder;
@@ -23,8 +26,9 @@ import io.roach.spring.pagination.repository.Doubles;
 @Configuration
 @EnableAutoConfiguration
 @EnableConfigurationProperties
-@EnableTransactionManagement(proxyTargetClass = true, order = AdvisorOrder.HIGH)
+@EnableTransactionManagement(proxyTargetClass = true, order = Ordered.LOWEST_PRECEDENCE)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
+@EnableRetry
 @ComponentScan(basePackageClasses = PaginationApplication.class)
 public class PaginationApplication implements CommandLineRunner {
     public static void main(String[] args) {
