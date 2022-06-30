@@ -38,7 +38,7 @@ public class BatchStatementsTest extends AbstractBatchStatementsTest {
     @Test
     @org.junit.jupiter.api.Order(3)
     public void whenFindingPlacedOrders_thenUpdateStatusToConfirmed() {
-        final List<UUID> ids = orderService.findOrderIdsWithStatus(ShipmentStatus.placed);
+        final List<UUID> ids = orderService.findOrderIdsByStatus(ShipmentStatus.placed);
         Timer.timeExecution("updateOrderStatus->confirmed",
                 () -> orderService.updateOrderStatus(ids, ShipmentStatus.confirmed));
     }
@@ -46,7 +46,7 @@ public class BatchStatementsTest extends AbstractBatchStatementsTest {
     @Test
     @org.junit.jupiter.api.Order(4)
     public void whenFindingConfirmedOrders_thenUpdateStatusToDelivered() {
-        final List<UUID> ids = orderService.findOrderIdsWithStatus(ShipmentStatus.confirmed);
+        final List<UUID> ids = orderService.findOrderIdsByStatus(ShipmentStatus.confirmed);
         Timer.timeExecution("updateOrderStatus->delivered",
                 () -> orderService.updateOrderStatus(ids, ShipmentStatus.delivered));
     }

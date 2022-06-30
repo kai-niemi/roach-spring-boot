@@ -59,7 +59,7 @@ public class TestDoubles {
                 .build();
     }
 
-    private ThreadLocalRandom random = ThreadLocalRandom.current();
+    private final ThreadLocalRandom random = ThreadLocalRandom.current();
 
     public Customer newCustomer() {
         String fn = RandomData.randomFirstName();
@@ -72,11 +72,11 @@ public class TestDoubles {
                 .withLastName(ln)
                 .withUserName(un)
                 .withEmail(email)
-                .withAddress(randomAddress())
+                .withAddress(newAddress())
                 .build();
     }
 
-    public static Address randomAddress() {
+    private Address newAddress() {
         return Address.builder()
                 .setAddress1(RandomData.randomWord(15))
                 .setAddress2(RandomData.randomWord(15))
@@ -96,7 +96,8 @@ public class TestDoubles {
             RandomData.selectRandomUnique(allProducts, productCount).forEach(product ->
                     ob.andOrderItem()
                             .withProduct(product)
-                            .withQuantity(5)
+                            .withUnitPrice(product.getPrice())
+                            .withQuantity(RandomData.randomInt(2,10))
                             .then());
 
             callback.accept(ob.build());

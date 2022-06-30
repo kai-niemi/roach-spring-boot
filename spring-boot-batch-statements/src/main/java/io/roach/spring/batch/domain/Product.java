@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Table(name = "products")
@@ -72,6 +73,7 @@ public class Product extends AbstractEntity<UUID> {
     @Column(length = 128, nullable = false)
     private String name;
 
+    @NaturalId
     @Column(length = 128, nullable = false, unique = true)
     private String sku;
 
@@ -105,5 +107,16 @@ public class Product extends AbstractEntity<UUID> {
     public int addInventoryQuantity(int qty) {
         this.inventory += qty;
         return inventory;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", sku='" + sku + '\'' +
+                ", price=" + price +
+                ", inventory=" + inventory +
+                '}';
     }
 }

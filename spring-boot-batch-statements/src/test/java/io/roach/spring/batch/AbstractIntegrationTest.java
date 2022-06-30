@@ -22,7 +22,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
         DependencyInjectionTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
 })
-public class AbstractIntegrationTest {
+public abstract class AbstractIntegrationTest {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired

@@ -35,8 +35,9 @@ public class DataSourceConfiguration {
         return traceLogger.isTraceEnabled()
                 ? ProxyDataSourceBuilder
                 .create(ds)
-                .asJson()
                 .logQueryBySlf4j(SLF4JLogLevel.TRACE, traceLogger.getName())
+                .asJson()
+                .multiline()
                 .build()
                 : ds;
     }

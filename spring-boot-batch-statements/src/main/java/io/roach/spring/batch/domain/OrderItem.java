@@ -9,9 +9,12 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 @Embeddable
 public class OrderItem {
-    public static final class Builder {
+    public static final class NestedBuilder {
         private final Order.Builder parentBuilder;
 
         private final Consumer<OrderItem> callback;
@@ -22,22 +25,22 @@ public class OrderItem {
 
         private Product product;
 
-        Builder(Order.Builder parentBuilder, Consumer<OrderItem> callback) {
+        NestedBuilder(Order.Builder parentBuilder, Consumer<OrderItem> callback) {
             this.parentBuilder = parentBuilder;
             this.callback = callback;
         }
 
-        public Builder withQuantity(int quantity) {
+        public NestedBuilder withQuantity(int quantity) {
             this.quantity = quantity;
             return this;
         }
 
-        public Builder withUnitPrice(BigDecimal unitPrice) {
+        public NestedBuilder withUnitPrice(BigDecimal unitPrice) {
             this.unitPrice = unitPrice;
             return this;
         }
 
-        public Builder withProduct(Product product) {
+        public NestedBuilder withProduct(Product product) {
             this.product = product;
             return this;
         }
@@ -66,6 +69,7 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY)  // Default fetch type is EAGER for @ManyToOne
     @JoinColumn(name = "product_id", updatable = false)
+    @Fetch(FetchMode.JOIN)
     private Product product;
 
     public int getQuantity() {
@@ -85,5 +89,14 @@ public class OrderItem {
             throw new IllegalStateException("unitPrice is null");
         }
         return unitPrice.multiply(new BigDecimal(quantity));
+    }
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "quantity=" + quantity +
+                ", unitPrice=" + unitPrice +
+                ", product=" + product +
+                '}';
     }
 }

@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
@@ -85,7 +86,18 @@ public class OrderService {
     }
 
     @TransactionBoundary(readOnly = true)
-    public List<UUID> findOrderIdsWithStatus(ShipmentStatus status) {
+    public List<UUID> findOrderIdsByStatus(ShipmentStatus status) {
         return orderRepository.findIdsByShipmentStatus(status);
+    }
+
+    @TransactionBoundary(readOnly = true)
+    public List<Order> findOrdersByStatus(ShipmentStatus status, int limit) {
+        Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "No tx");
+
+        List<Order> orders = orderRepository.findByShipmentStatus(status,
+                Pageable.ofSize(limit)).getContent();
+        // Lazy-fetch associations
+        orders.forEach(order -> order.getOrderItems().size());
+        return orders;
     }
 }

@@ -7,10 +7,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OrderColumn;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -36,8 +51,8 @@ public class Order extends AbstractEntity<UUID> {
             return this;
         }
 
-        public OrderItem.Builder andOrderItem() {
-            return new OrderItem.Builder(this, orderItems::add);
+        public OrderItem.NestedBuilder andOrderItem() {
+            return new OrderItem.NestedBuilder(this, orderItems::add);
         }
 
         public Order build() {
@@ -47,11 +62,12 @@ public class Order extends AbstractEntity<UUID> {
             if (this.orderItems.isEmpty()) {
                 throw new IllegalStateException("Empty order");
             }
+
             Order order = new Order();
             order.customer = this.customer;
-            order.orderItems.addAll(this.orderItems);
             order.deliveryAddress = customer.getAddress();
             order.totalPrice = order.subTotal();
+            order.orderItems.addAll(this.orderItems);
             return order;
         }
     }
@@ -72,7 +88,6 @@ public class Order extends AbstractEntity<UUID> {
     @JoinColumn(name = "order_id", nullable = false)
     @JoinTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
     @OrderColumn(name = "item_pos")
-    @Fetch(FetchMode.SUBSELECT)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -163,5 +178,19 @@ public class Order extends AbstractEntity<UUID> {
             subTotal = subTotal.add(oi.totalCost());
         }
         return subTotal;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", totalPrice=" + totalPrice +
+                ", customer=" + customer +
+                ", orderItems=" + orderItems +
+                ", status=" + status +
+                ", datePlaced=" + datePlaced +
+                ", dateUpdated=" + dateUpdated +
+                ", deliveryAddress=" + deliveryAddress +
+                '}';
     }
 }
