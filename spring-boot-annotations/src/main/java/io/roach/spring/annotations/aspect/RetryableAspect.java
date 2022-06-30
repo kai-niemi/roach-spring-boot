@@ -34,7 +34,7 @@ import io.roach.spring.annotations.TransactionBoundary;
 @Aspect
 @Order(AdvisorOrder.HIGHEST) // This advisor must be before the TX advisor in the call chain
 public class RetryableAspect {
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Around(value = "Pointcuts.anyTransactionBoundaryOperation(transactionBoundary)",
             argNames = "pjp,transactionBoundary")

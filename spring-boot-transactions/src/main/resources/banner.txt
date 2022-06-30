@@ -1,0 +1,5 @@
+^__^               CockroachDB Spring Boot :: Explicit vs Implicit Transactions Demo
+(oo)\_______       ${application.formatted-version} powered by Spring Boot ${spring-boot.formatted-version}
+(__)\       )\/\
+   ||----w |
+   ||     ||

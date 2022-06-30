@@ -25,14 +25,14 @@ public class FollowerReadAspect {
 
     @Before(value = "@annotation(followerRead)", argNames = "followerRead")
     public void beforeFollowerReadOperation(FollowerRead followerRead) {
-        Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "Explicit transaction required");
         if ("(exact)".equals(followerRead.staleness())) {
+            Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "Exact staleness reads must use explicit transactions");
             jdbcTemplate.execute(
                     "SET TRANSACTION AS OF SYSTEM TIME follower_read_timestamp()");
         } else {
-            throw new UnsupportedOperationException("Bounded staleness reads must use implicit transactions");
-//            jdbcTemplate.execute(
-//                    "SET TRANSACTION AS OF SYSTEM TIME with_max_staleness('" + followerRead.staleness() + "')");
+            Assert.isTrue(!TransactionSynchronizationManager.isActualTransactionActive(), "Bounded staleness reads must use implicit transactions");
+            jdbcTemplate.execute(
+                    "SET TRANSACTION AS OF SYSTEM TIME with_max_staleness('" + followerRead.staleness() + "')");
         }
     }
 }
