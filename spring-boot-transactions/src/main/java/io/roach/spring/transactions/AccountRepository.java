@@ -1,4 +1,4 @@
-package io.roach.spring.transaction;
+package io.roach.spring.transactions;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

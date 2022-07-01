@@ -1,4 +1,4 @@
-package io.roach.spring.transaction;
+package io.roach.spring.transactions;
 
 import java.util.Arrays;
 import java.util.List;
@@ -61,11 +61,6 @@ public class AccountService implements Pingable {
     @Transactional(propagation = REQUIRES_NEW)
     public Iterable<AccountEntity> findAll() {
         return accountRepository.findAll();
-    }
-
-    @Transactional(propagation = REQUIRES_NEW)
-    public void persist(AccountEntity account) {
-        accountRepository.save(account);
     }
 
     @Transactional(propagation = REQUIRES_NEW)

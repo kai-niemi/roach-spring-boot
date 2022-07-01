@@ -1,4 +1,4 @@
-package io.roach.spring.transaction;
+package io.roach.spring.transactions;
 
 import java.util.Properties;
 
@@ -50,7 +50,7 @@ public class PersistenceConfiguration {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setPersistenceUnitName(getClass().getSimpleName());
         emf.setDataSource(dataSource);
-        emf.setPackagesToScan("io.roach.spring");
+        emf.setPackagesToScan("io.roach.spring.transactions");
         emf.setJpaVendorAdapter(jpaVendorAdapter());
         emf.setJpaProperties(jpaVendorProperties());
         return emf;

@@ -1,13 +1,10 @@
-package io.roach.spring.transaction;
+package io.roach.spring.transactions;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity(name = "t_account")
 public class AccountEntity extends AbstractEntity<Long> {

@@ -1,4 +1,4 @@
-package io.roach.spring.transaction;
+package io.roach.spring.transactions;
 
 import java.util.Locale;
 

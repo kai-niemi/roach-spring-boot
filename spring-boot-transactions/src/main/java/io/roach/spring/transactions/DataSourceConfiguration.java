@@ -1,4 +1,4 @@
-package io.roach.spring.transaction;
+package io.roach.spring.transactions;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -33,7 +33,7 @@ public class DataSourceConfiguration {
                 .create(ds)
                 .asJson()
                 .logQueryBySlf4j(SLF4JLogLevel.TRACE, sqlTraceLogger.getName())
-                .multiline()
+//                .multiline()
                 .build()
                 : ds;
     }
@@ -54,7 +54,7 @@ public class DataSourceConfiguration {
         ds.addDataSourceProperty("prepStmtCacheSize", "250");
         ds.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         ds.addDataSourceProperty("useServerPrepStmts", "true");
-        ds.addDataSourceProperty("application_name", "Spring Boot CTE");
+        ds.addDataSourceProperty("application_name", "Spring Boot Transactions");
 
         return ds;
     }

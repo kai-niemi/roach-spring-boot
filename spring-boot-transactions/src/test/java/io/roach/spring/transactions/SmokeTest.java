@@ -1,4 +1,4 @@
-package io.roach.spring.transaction;
+package io.roach.spring.transactions;
 
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -13,17 +13,22 @@ public class SmokeTest extends AbstractTest {
 
     @Autowired
     @Qualifier("jdbcTransferService")
-    private TransferService transactionServiceExplicit;
+    private TransferService jdbcTransferService;
 
     @Autowired
-    @Qualifier("CommonTableExpressionTransferService")
-    private TransferService transactionServiceImplicit;
+    @Qualifier("jpaTransferService")
+    private TransferService jpaTransferService;
+
+    @Autowired
+    @Qualifier("commonTableExpressionTransferService")
+    private TransferService cteTransferService;
 
     @Test
     @Order(1)
     public void whenStarting_thenOnePingOnly() {
         accountService.ping();
-        transactionServiceExplicit.ping();
-        transactionServiceImplicit.ping();
+        jdbcTransferService.ping();
+        jpaTransferService.ping();
+        cteTransferService.ping();
     }
 }
