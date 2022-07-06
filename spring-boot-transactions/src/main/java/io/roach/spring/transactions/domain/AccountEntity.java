@@ -1,16 +1,19 @@
-package io.roach.spring.transactions;
+package io.roach.spring.transactions.domain;
 
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity(name = "t_account")
 public class AccountEntity extends AbstractEntity<Long> {
     @Id
     @Column( name = "id")
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "balance")
     private double balance;

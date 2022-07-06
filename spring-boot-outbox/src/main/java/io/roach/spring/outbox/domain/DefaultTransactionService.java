@@ -10,13 +10,9 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.util.Assert;
 
 @Service
-public class JpaTransactionService implements TransactionService {
+public class DefaultTransactionService implements TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
-
-    public int foo(int bar) {
-        return 0;
-    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)

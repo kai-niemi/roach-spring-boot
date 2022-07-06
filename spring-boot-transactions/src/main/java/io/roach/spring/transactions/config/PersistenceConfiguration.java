@@ -1,4 +1,4 @@
-package io.roach.spring.transactions;
+package io.roach.spring.transactions.config;
 
 import java.util.Properties;
 
@@ -7,7 +7,6 @@ import javax.sql.DataSource;
 
 import org.hibernate.cache.internal.NoCachingRegionFactory;
 import org.hibernate.cfg.Environment;
-import org.hibernate.dialect.CockroachDB201Dialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -60,7 +59,7 @@ public class PersistenceConfiguration {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(false);
         vendorAdapter.setShowSql(false);
-        vendorAdapter.setDatabasePlatform(CockroachDB201Dialect.class.getName());
+        vendorAdapter.setDatabasePlatform(CockroachDB221Dialect.class.getName());
         vendorAdapter.setDatabase(Database.POSTGRESQL);
         return vendorAdapter;
     }
@@ -81,7 +80,7 @@ public class PersistenceConfiguration {
                 setProperty(Environment.USE_MINIMAL_PUTS, "true");
                 setProperty(Environment.FORMAT_SQL, "false");
 //                setProperty(Environment.CONNECTION_PROVIDER_DISABLES_AUTOCOMMIT, "true");
-                setProperty(Environment.NON_CONTEXTUAL_LOB_CREATION, "true");
+                setProperty(Environment.NON_CONTEXTUAL_LOB_CREATION, "true"); // in dialect also
             }
         };
     }

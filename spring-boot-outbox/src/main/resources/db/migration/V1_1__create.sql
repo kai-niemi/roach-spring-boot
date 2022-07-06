@@ -1,7 +1,6 @@
 -- truncate table t_account;
 -- truncate table t_transaction;
--- show create table t_account;
--- drop table t_account cascade;
+-- truncate table t_outbox;
 
 create table t_account
 (
@@ -44,11 +43,3 @@ create table t_outbox
 );
 
 ALTER TABLE t_outbox SET (ttl_expire_after = '5 minutes', ttl_job_cron = '*/5 * * * *', ttl_select_batch_size = 256);
-
--- SHOW CREATE TABLE t_outbox;
--- SHOW SCHEDULES;
-
--- WITH x AS (SHOW JOBS) SELECT * from x WHERE job_type = 'ROW LEVEL TTL';
--- ALTER TABLE t_outbox RESET (ttl_job_cron);
-
--- SELECT id,jsonb_pretty(payload) FROM t_outbox WHERE crdb_internal_expiration > now() limit 3;

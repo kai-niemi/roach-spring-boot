@@ -1,4 +1,4 @@
-package io.roach.spring.transactions;
+package io.roach.spring.transactions.domain;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +22,7 @@ import static java.sql.Statement.SUCCESS_NO_INFO;
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
 @Service
-public class AccountService implements Pingable {
+public class JdbcAccountService implements AccountService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -41,6 +41,7 @@ public class AccountService implements Pingable {
                 .usingGeneratedKeyColumns("id");
     }
 
+    @Override
     @Transactional(propagation = REQUIRES_NEW)
     public void create(List<AccountEntity> accounts) {
         MapSqlParameterSource[] parameters = accounts
@@ -58,11 +59,13 @@ public class AccountService implements Pingable {
         });
     }
 
+    @Override
     @Transactional(propagation = REQUIRES_NEW)
     public Iterable<AccountEntity> findAll() {
         return accountRepository.findAll();
     }
 
+    @Override
     @Transactional(propagation = REQUIRES_NEW)
     public void clearAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);

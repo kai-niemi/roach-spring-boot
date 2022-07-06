@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
-public class JdbcTransferTest extends AbstractTransactionTest {
+import io.roach.spring.transactions.domain.TransferService;
+
+@ActiveProfiles({"test","verbose"})
+public class JdbcTransferTest extends AbstractTransferTest {
     @Autowired
     @Qualifier("jdbcTransferService")
     private TransferService transferService;

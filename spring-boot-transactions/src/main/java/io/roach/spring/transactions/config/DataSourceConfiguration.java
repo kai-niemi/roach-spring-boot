@@ -1,4 +1,4 @@
-package io.roach.spring.transactions;
+package io.roach.spring.transactions.config;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;

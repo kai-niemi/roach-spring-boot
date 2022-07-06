@@ -37,7 +37,7 @@ import io.roach.spring.outbox.domain.TransactionEntity;
 
 @Aspect
 @Component
-@Order(Ordered.LOWEST_PRECEDENCE - 1) // Make sure its ordered after TX advisor (by a higher value)
+@Order(Ordered.LOWEST_PRECEDENCE - 1) // Make sure it's ordered after TX advisor (by a higher value)
 public class OutboxAspect {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -57,7 +57,7 @@ public class OutboxAspect {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    @AfterReturning(pointcut = "execution(* io.roach.spring.outbox.domain.JpaTransactionService.createTransaction(..))", returning = "transactionEntity")
+    @AfterReturning(pointcut = "execution(* io.roach.spring.outbox.domain.DefaultTransactionService.createTransaction(..))", returning = "transactionEntity")
     public void doAfterCreateTransactions(TransactionEntity transactionEntity) {
         if (!TransactionSynchronizationManager.isActualTransactionActive()) {
             throw new IllegalStateException("No transaction context");
@@ -85,7 +85,7 @@ public class OutboxAspect {
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
-    @AfterReturning(pointcut = "execution(* io.roach.spring.outbox.domain.JpaTransactionService.createTransactionCollection(..))", returning = "transactionEntities")
+    @AfterReturning(pointcut = "execution(* io.roach.spring.outbox.domain.DefaultTransactionService.createTransactionCollection(..))", returning = "transactionEntities")
     public void doAfterCreateTransactions(List<TransactionEntity> transactionEntities) throws IOException {
         if (!TransactionSynchronizationManager.isActualTransactionActive()) {
             throw new IllegalStateException("No transaction context");

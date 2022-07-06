@@ -6,8 +6,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,8 +19,6 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 
 @Service
 public class AccountService {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private DataSource dataSource;
 

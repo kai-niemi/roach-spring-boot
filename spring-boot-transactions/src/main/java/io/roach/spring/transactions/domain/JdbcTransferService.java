@@ -1,4 +1,4 @@
-package io.roach.spring.transactions;
+package io.roach.spring.transactions.domain;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

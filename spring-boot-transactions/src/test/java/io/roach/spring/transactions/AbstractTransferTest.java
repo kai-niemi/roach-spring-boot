@@ -13,11 +13,16 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class AbstractTransactionTest extends AbstractTest {
+import io.roach.spring.transactions.domain.AccountEntity;
+import io.roach.spring.transactions.domain.JdbcAccountService;
+import io.roach.spring.transactions.domain.TransactionEntity;
+import io.roach.spring.transactions.domain.TransferService;
+
+public abstract class AbstractTransferTest extends AbstractTest {
     protected static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
     @Autowired
-    protected AccountService accountService;
+    protected JdbcAccountService accountService;
 
     protected final int numAccounts = 100;
 
@@ -27,12 +32,12 @@ public abstract class AbstractTransactionTest extends AbstractTest {
 
     @BeforeAll
     public void setupTest() {
-        logger.info("Clearing all accounts");
+        logger.info("Clearing all accounts and transactions");
         accountService.clearAll();
 
-        final List<AccountEntity> batch = new ArrayList<>();
-
         logger.info("Creating {} accounts using batch size {}", numAccounts, batchSize);
+
+        final List<AccountEntity> batch = new ArrayList<>();
 
         int n = numAccounts;
         while (n > 0) {
@@ -45,14 +50,14 @@ public abstract class AbstractTransactionTest extends AbstractTest {
 
     protected AccountEntity newAccount() {
         AccountEntity instance = new AccountEntity();
-        instance.setBalance(RANDOM.nextDouble());
+        instance.setBalance(RANDOM.nextDouble(10.00, 500.00));
         return instance;
     }
 
     protected TransactionEntity newTransaction(Long accountId) {
         TransactionEntity instance = new TransactionEntity();
         instance.setAccountId(accountId);
-        instance.setAmount(RANDOM.nextDouble());
+        instance.setAmount(RANDOM.nextDouble(10.00, 500.00));
         instance.setTransactionType("credit");
         instance.setTransactionStatus("hello");
         return instance;
@@ -65,6 +70,7 @@ public abstract class AbstractTransactionTest extends AbstractTest {
         AtomicInteger numTransactions = new AtomicInteger();
 
         long t = System.currentTimeMillis();
+
         accountService.findAll().forEach(account -> {
             List<TransactionEntity> batch = new ArrayList<>();
 
@@ -77,21 +83,21 @@ public abstract class AbstractTransactionTest extends AbstractTest {
             numTransactions.addAndGet(batch.size());
         });
 
-        logger.info("Created {} transfers total at {} ms per account",
+        logger.info("Created {} transactions total at {} ms per account",
                 numTransactions.get(),
                 (System.currentTimeMillis() - t) / numAccounts.get());
     }
 
-    @Test
-    @Order(1)
-    public void whenCreatingSingletons_thenSucceed() {
-        generate(batch -> {
-            batch.forEach(singleton -> {
-                getTransferService().createTransfer(singleton);
-            });
-        });
-    }
-
+//    @Test
+//    @Order(1)
+//    public void whenCreatingSingletons_thenSucceed() {
+//        generate(batch -> {
+//            batch.forEach(singleton -> {
+//                getTransferService().createTransfer(singleton);
+//            });
+//        });
+//    }
+//
     @Test
     @Order(2)
     public void whenCreatingBatches_thenSucceed() {

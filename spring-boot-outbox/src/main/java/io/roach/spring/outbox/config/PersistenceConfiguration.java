@@ -80,7 +80,7 @@ public class PersistenceConfiguration {
                 setProperty(Environment.USE_SECOND_LEVEL_CACHE, "false");
                 setProperty(Environment.USE_MINIMAL_PUTS, "true");
                 setProperty(Environment.FORMAT_SQL, "false");
-//                setProperty(Environment.CONNECTION_PROVIDER_DISABLES_AUTOCOMMIT, "true");
+                setProperty(Environment.CONNECTION_PROVIDER_DISABLES_AUTOCOMMIT, "true");
                 setProperty(Environment.NON_CONTEXTUAL_LOB_CREATION, "true");
             }
         };

@@ -33,7 +33,7 @@ public class DataSourceConfiguration {
                 .create(ds)
                 .asJson()
                 .logQueryBySlf4j(SLF4JLogLevel.TRACE, sqlTraceLogger.getName())
-//                .multiline()
+                .multiline()
                 .build()
                 : ds;
     }
@@ -47,7 +47,7 @@ public class DataSourceConfiguration {
         ds.setPoolName("spring-boot-outbox");
         ds.setMaximumPoolSize(50);// Should be: cluster_total_vcpu * 4 / total_pool_number
         ds.setMinimumIdle(25); // Should be maxPoolSize for fixed-sized pool
-        ds.setAutoCommit(true); // In combo with Environment.CONNECTION_PROVIDER_DISABLES_AUTOCOMMIT=true
+        ds.setAutoCommit(false); // In combo with Environment.CONNECTION_PROVIDER_DISABLES_AUTOCOMMIT=true
 
         ds.addDataSourceProperty("reWriteBatchedInserts", "true");
         ds.addDataSourceProperty("cachePrepStmts", "true");

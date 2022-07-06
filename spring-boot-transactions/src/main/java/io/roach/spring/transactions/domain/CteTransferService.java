@@ -1,4 +1,4 @@
-package io.roach.spring.transactions;
+package io.roach.spring.transactions.domain;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -16,7 +16,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.util.Assert;
 
 @Service
-public class CommonTableExpressionTransferService implements TransferService {
+public class CteTransferService implements TransferService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired

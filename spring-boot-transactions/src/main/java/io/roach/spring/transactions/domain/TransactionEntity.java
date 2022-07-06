@@ -1,4 +1,4 @@
-package io.roach.spring.transactions;
+package io.roach.spring.transactions.domain;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +12,7 @@ import javax.persistence.Id;
 public class TransactionEntity extends AbstractEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", insertable = false)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "account_id")
