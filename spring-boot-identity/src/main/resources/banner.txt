@@ -1,0 +1,5 @@
+^__^               CockroachDB Spring Boot :: Identity Generators
+(oo)\_______       ${application.formatted-version} powered by Spring Boot ${spring-boot.formatted-version}
+(__)\       )\/\
+   ||----w |
+   ||     ||

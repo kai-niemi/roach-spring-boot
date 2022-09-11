@@ -1,0 +1,3 @@
+spring:
+  datasource:
+    dialect: "io.roach.spring.identity.config.hibernate.CockroachDialectNumericIdentity"

@@ -1,0 +1,30 @@
+########################
+# Spring boot properties
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+########################
+spring:
+  main:
+    allow-circular-references: true
+  output:
+    ansi:
+      enabled: ALWAYS
+  flyway:
+    enabled: true
+    clean-on-validation-error: true
+    baseline-on-migrate: true
+  datasource:
+    url: jdbc:postgresql://localhost:26257/spring_boot?sslmode=disable
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password:
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 50
+# Custom
+    batch-size: 32
+    dialect: "io.roach.spring.identity.config.hibernate.CockroachDialectUUIDIdentity"
+
+#############################
+logging:
+  pattern:
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr([%logger{39}]){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
