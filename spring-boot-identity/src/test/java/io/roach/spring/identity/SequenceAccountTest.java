@@ -4,7 +4,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.roach.spring.identity.model.SequenceAccountEntity;
 
-@ActiveProfiles({"test", "verbose"})
+@ActiveProfiles({"test"})
 public class SequenceAccountTest extends AbstractAccountTest<SequenceAccountEntity, Long> {
     @Override
     protected SequenceAccountEntity newInstance() {

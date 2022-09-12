@@ -89,6 +89,7 @@ public class PersistenceConfiguration {
                 setProperty(Environment.FORMAT_SQL, "false");
                 setProperty(Environment.NON_CONTEXTUAL_LOB_CREATION, "true"); // in dialect also
                 setProperty(Environment.CONNECTION_PROVIDER_DISABLES_AUTOCOMMIT, "true");
+//                setProperty(Environment.CHECK_NULLABILITY, "true");
             }
         };
     }

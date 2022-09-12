@@ -8,8 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 @Entity
 @Table(name = "account_uuid")
+@DynamicInsert
+@DynamicUpdate
 public class AssignedUUIDAccountEntity extends AccountEntity<UUID> {
     @Id
     @Column(updatable = false, nullable = false)

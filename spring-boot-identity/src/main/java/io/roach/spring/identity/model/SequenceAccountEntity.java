@@ -8,8 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 @Entity
 @Table(name = "account_sequence")
+@DynamicInsert
+@DynamicUpdate
 public class SequenceAccountEntity extends AccountEntity<Long> {
     @Id
     @Column(updatable = false, nullable = false)
