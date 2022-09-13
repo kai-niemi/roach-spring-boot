@@ -2,21 +2,24 @@ package io.roach.spring.outbox.domain;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-@Entity(name = "t_transaction")
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+@Entity
+@Table(name = "t_transaction")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class TransactionEntity extends AbstractEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", insertable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "account_id")
-    private Long accountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false)
+    private AccountEntity account;
 
     @Column(name = "amount")
     private double amount;
@@ -28,6 +31,8 @@ public class TransactionEntity extends AbstractEntity<Long> {
     private String transactionStatus;
 
     @Column(name = "creation_time", nullable = false, insertable = false)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime creationTime;
 
     @Override
@@ -35,53 +40,43 @@ public class TransactionEntity extends AbstractEntity<Long> {
         return id;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public AccountEntity getAccount() {
+        return account;
+    }
+
+    public void setAccount(AccountEntity account) {
+        this.account = account;
     }
 
     public double getAmount() {
         return amount;
     }
 
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
     public String getTransactionType() {
         return transactionType;
+    }
+
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
     }
 
     public String getTransactionStatus() {
         return transactionStatus;
     }
 
+    public void setTransactionStatus(String transactionStatus) {
+        this.transactionStatus = transactionStatus;
+    }
+
     public LocalDateTime getCreationTime() {
         return creationTime;
     }
 
-    public TransactionEntity setId(Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public TransactionEntity setAccountId(Long accountId) {
-        this.accountId = accountId;
-        return this;
-    }
-
-    public TransactionEntity setAmount(double amount) {
-        this.amount = amount;
-        return this;
-    }
-
-    public TransactionEntity setTransactionType(String transactionType) {
-        this.transactionType = transactionType;
-        return this;
-    }
-
-    public TransactionEntity setTransactionStatus(String transactionStatus) {
-        this.transactionStatus = transactionStatus;
-        return this;
-    }
-
-    public TransactionEntity setCreationTime(LocalDateTime creationTime) {
+    public void setCreationTime(LocalDateTime creationTime) {
         this.creationTime = creationTime;
-        return this;
     }
 }

@@ -43,6 +43,7 @@ public class OutboxAspect {
 
     private final ObjectMapper mapper = new ObjectMapper()
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
             .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
             .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
@@ -66,10 +67,16 @@ public class OutboxAspect {
         Assert.isTrue(!transactionEntity.isNew(), "Expected persistent entity but got transient");
 
         try {
-            String payload = mapper.writer().writeValueAsString(transactionEntity);
-
-            logger.trace("Writing payload to outbox: {}", payload);
-
+            String payload;
+            if (logger.isTraceEnabled()) {
+                payload = mapper.writer()
+                        .withDefaultPrettyPrinter()
+                        .writeValueAsString(transactionEntity);
+                logger.trace("Writing payload to outbox: {}", payload);
+            } else {
+                payload = mapper.writer()
+                        .writeValueAsString(transactionEntity);
+            }
             jdbcTemplate.update(
                     "INSERT INTO t_outbox (aggregate_type,aggregate_id,event_type,payload) VALUES (?,?,?,?)",
                     ps -> {

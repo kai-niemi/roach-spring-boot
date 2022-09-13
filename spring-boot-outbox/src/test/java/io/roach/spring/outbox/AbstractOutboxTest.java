@@ -10,12 +10,13 @@ import java.util.stream.LongStream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 import io.roach.spring.outbox.domain.AccountEntity;
 import io.roach.spring.outbox.domain.AccountService;
 import io.roach.spring.outbox.domain.TransactionEntity;
 
-public abstract class AbstractTransactionTest extends AbstractTest {
+public abstract class AbstractOutboxTest extends AbstractTest {
     protected static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
     @Autowired
@@ -23,7 +24,7 @@ public abstract class AbstractTransactionTest extends AbstractTest {
 
     protected final int numAccounts = 100;
 
-    protected final int numTransactionsPerAccount = 64;
+    protected final int numTransactionsPerAccount = 4;
 
     protected final int batchSize = 32;
 
@@ -50,36 +51,37 @@ public abstract class AbstractTransactionTest extends AbstractTest {
         return instance;
     }
 
-    protected TransactionEntity newTransaction(Long accountId) {
+    protected TransactionEntity newTransaction(AccountEntity account) {
         TransactionEntity instance = new TransactionEntity();
-        instance.setAccountId(accountId);
+        instance.setAccount(account);
         instance.setAmount(RANDOM.nextDouble());
         instance.setTransactionType(RANDOM.nextBoolean() ? "credit" : "debit");
         instance.setTransactionStatus("pending");
         return instance;
     }
 
-    protected void generate(Consumer<List<TransactionEntity>> consumer) {
-        logger.info("Creating {} orders per account ({} accounts)", numTransactionsPerAccount, numAccounts);
+    protected void generate(int accountLimit, Consumer<List<TransactionEntity>> consumer) {
+        logger.info("Creating {} transactions per account ({} total)", numTransactionsPerAccount, accountLimit);
 
-        AtomicInteger numAccounts = new AtomicInteger();
-        AtomicInteger numTransactions = new AtomicInteger();
+        AtomicInteger totAccounts = new AtomicInteger();
+        AtomicInteger totTxns = new AtomicInteger();
 
         long t = System.currentTimeMillis();
-        accountService.findAll().forEach(account -> {
+
+        accountService.findAll(PageRequest.of(0, accountLimit)).forEach(account -> {
             List<TransactionEntity> batch = new ArrayList<>();
 
             IntStream.rangeClosed(1, numTransactionsPerAccount)
-                    .forEach(value -> batch.add(newTransaction(account.getId())));
+                    .forEach(value -> batch.add(newTransaction(account)));
 
             consumer.accept(batch);
 
-            numAccounts.incrementAndGet();
-            numTransactions.addAndGet(batch.size());
+            totAccounts.incrementAndGet();
+            totTxns.addAndGet(batch.size());
         });
 
-        logger.info("Created {} orders total at {} ms avg",
-                numTransactions.get(),
-                (System.currentTimeMillis() - t) / numAccounts.get());
+        logger.info("Created {} transactions total at {} ms avg",
+                totTxns.get(),
+                (System.currentTimeMillis() - t) / totTxns.get());
     }
 }

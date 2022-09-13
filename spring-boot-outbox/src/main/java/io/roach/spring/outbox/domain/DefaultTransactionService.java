@@ -18,6 +18,7 @@ public class DefaultTransactionService implements TransactionService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public TransactionEntity createTransaction(TransactionEntity entity) {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "Transaction expected!");
+
         transactionRepository.save(entity);
         return entity;
     }
@@ -26,6 +27,7 @@ public class DefaultTransactionService implements TransactionService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public List<TransactionEntity> createTransactionCollection(List<TransactionEntity> transactionEntities) {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "Transaction expected!");
+
         transactionRepository.saveAll(transactionEntities);
         return transactionEntities;
     }

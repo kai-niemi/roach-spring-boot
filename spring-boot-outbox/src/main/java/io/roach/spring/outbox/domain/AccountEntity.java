@@ -4,18 +4,30 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Entity(name = "t_account")
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+@Entity
+@Table(name = "t_account")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class AccountEntity extends AbstractEntity<Long> {
     @Id
-    @Column( name = "id")
-    private long id;
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "balance")
     private double balance;
 
     @Column(name = "creation_time", nullable = true, insertable = false)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime creationTime;
 
     @Override

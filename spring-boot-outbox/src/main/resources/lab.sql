@@ -1,7 +1,7 @@
 SET CLUSTER SETTING kv.rangefeed.enabled = true;
 
-CREATE CHANGEFEED FOR TABLE t_transaction
-    INTO 'webhook-https://localhost:8443/webhook/transactions?insecure_tls_skip_verify=true'
+CREATE CHANGEFEED FOR TABLE t_outbox
+    INTO 'webhook-https://localhost:8443/webhook?insecure_tls_skip_verify=true'
     WITH updated, resolved='15s',
         webhook_sink_config='{"Flush": {"Messages": 5, "Frequency": "1s"}, "Retry": {"Max": "inf"}}';
 

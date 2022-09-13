@@ -8,6 +8,8 @@ import javax.sql.DataSource;
 import org.hibernate.cache.internal.NoCachingRegionFactory;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.CockroachDB201Dialect;
+import org.hibernate.dialect.identity.CockroachDB1920IdentityColumnSupport;
+import org.hibernate.dialect.identity.IdentityColumnSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -60,7 +62,7 @@ public class PersistenceConfiguration {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(false);
         vendorAdapter.setShowSql(false);
-        vendorAdapter.setDatabasePlatform(CockroachDB201Dialect.class.getName());
+        vendorAdapter.setDatabasePlatform(CockroachDB221Dialect.class.getName());
         vendorAdapter.setDatabase(Database.POSTGRESQL);
         return vendorAdapter;
     }
@@ -68,9 +70,7 @@ public class PersistenceConfiguration {
     private Properties jpaVendorProperties() {
         return new Properties() {
             {
-                if (batchSize > 0) {
-                    setProperty(Environment.STATEMENT_BATCH_SIZE, "" + batchSize);
-                }
+                setProperty(Environment.STATEMENT_BATCH_SIZE, "" + batchSize);
                 setProperty(Environment.ORDER_INSERTS, "true");
                 setProperty(Environment.ORDER_UPDATES, "true");
                 setProperty(Environment.BATCH_VERSIONED_DATA, "true");
@@ -84,5 +84,19 @@ public class PersistenceConfiguration {
                 setProperty(Environment.NON_CONTEXTUAL_LOB_CREATION, "true");
             }
         };
+    }
+
+    public static class CockroachDB221Dialect extends CockroachDB201Dialect {
+        @Override
+        public IdentityColumnSupport getIdentityColumnSupport() {
+            return new CockroachDB221IdentityColumnSupport();
+        }
+
+        private static class CockroachDB221IdentityColumnSupport extends CockroachDB1920IdentityColumnSupport {
+            @Override
+            public String getIdentityInsertString() {
+                return "unique_rowid()";
+            }
+        }
     }
 }
