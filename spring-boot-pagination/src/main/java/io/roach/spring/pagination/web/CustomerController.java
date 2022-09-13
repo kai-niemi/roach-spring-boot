@@ -60,7 +60,7 @@ public class CustomerController {
     public HttpEntity<CustomerModel> getCustomer(@PathVariable("id") UUID accountId) {
         return ResponseEntity.ok(
                 customerModelAssembler(PageRequest.ofSize(5))
-                        .toModel(customerRepository.getById(accountId)));
+                        .toModel(customerRepository.getReferenceById(accountId)));
     }
 
     private RepresentationModelAssembler<Customer, CustomerModel> customerModelAssembler(Pageable page) {

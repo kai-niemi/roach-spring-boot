@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import io.roach.spring.transactions.domain.AccountEntity;
-import io.roach.spring.transactions.domain.JdbcAccountService;
+import io.roach.spring.transactions.domain.AccountService;
 import io.roach.spring.transactions.domain.TransactionEntity;
 import io.roach.spring.transactions.domain.TransferService;
 
@@ -22,7 +22,7 @@ public abstract class AbstractTransferTest extends AbstractTest {
     protected static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
     @Autowired
-    protected JdbcAccountService accountService;
+    protected AccountService accountService;
 
     protected final int numAccounts = 100;
 
@@ -88,16 +88,16 @@ public abstract class AbstractTransferTest extends AbstractTest {
                 (System.currentTimeMillis() - t) / numAccounts.get());
     }
 
-//    @Test
-//    @Order(1)
-//    public void whenCreatingSingletons_thenSucceed() {
-//        generate(batch -> {
-//            batch.forEach(singleton -> {
-//                getTransferService().createTransfer(singleton);
-//            });
-//        });
-//    }
-//
+    @Test
+    @Order(1)
+    public void whenCreatingSingletons_thenSucceed() {
+        generate(batch -> {
+            batch.forEach(singleton -> {
+                getTransferService().createTransfer(singleton);
+            });
+        });
+    }
+
     @Test
     @Order(2)
     public void whenCreatingBatches_thenSucceed() {

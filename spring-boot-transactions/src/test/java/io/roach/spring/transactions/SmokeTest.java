@@ -6,13 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ActiveProfiles;
 
+import io.roach.spring.transactions.domain.AccountService;
 import io.roach.spring.transactions.domain.JdbcAccountService;
 import io.roach.spring.transactions.domain.TransferService;
 
 @ActiveProfiles("test")
 public class SmokeTest extends AbstractTest {
     @Autowired
-    private JdbcAccountService accountService;
+    private AccountService accountService;
 
     @Autowired
     @Qualifier("jdbcTransferService")

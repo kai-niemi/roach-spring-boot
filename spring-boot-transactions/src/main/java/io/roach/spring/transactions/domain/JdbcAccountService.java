@@ -46,8 +46,8 @@ public class JdbcAccountService implements AccountService {
     public void create(List<AccountEntity> accounts) {
         MapSqlParameterSource[] parameters = accounts
                 .stream()
-                .map(project -> new MapSqlParameterSource()
-                        .addValue("balance", project.getBalance()))
+                .map(account -> new MapSqlParameterSource()
+                        .addValue("balance", account.getBalance()))
                 .toArray(MapSqlParameterSource[]::new);
 
         int[] rowsAffected = this.jdbcInsert.executeBatch(parameters);
