@@ -6,11 +6,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 @Entity
 @Table(name = "account_numid")
+@DynamicInsert
+@DynamicUpdate
 public class CustomIDAccountEntity extends AccountEntity<Long> {
     @Id
     @Column(updatable = false, nullable = false)

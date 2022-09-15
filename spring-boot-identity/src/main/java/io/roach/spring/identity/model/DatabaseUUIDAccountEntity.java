@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -19,6 +21,8 @@ import io.roach.spring.identity.config.hibernate.CockroachUUIDType;
 @Entity
 @Table(name = "account_uuid_db")
 @TypeDefs({@TypeDef(name = "crdb-uuid", typeClass = CockroachUUIDType.class)})
+@DynamicInsert
+@DynamicUpdate
 public class DatabaseUUIDAccountEntity extends AccountEntity<UUID> {
     @Id
     @Column(updatable = false, nullable = false)

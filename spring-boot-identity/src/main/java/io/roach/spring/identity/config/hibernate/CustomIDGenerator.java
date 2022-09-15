@@ -22,24 +22,29 @@ public class CustomIDGenerator implements IdentifierGenerator {
 
     private int batchSize;
 
+    private String idQuery;
+
     @Override
     public void configure(Type type, Properties properties,
                           ServiceRegistry serviceRegistry) throws MappingException {
         this.batchSize = Integer.parseInt(properties.getProperty("batchSize", "32"));
+
+        StringBuilder sb = new StringBuilder("select ");
+        IntStream.rangeClosed(1, batchSize).forEach(value -> {
+            sb.append("unordered_unique_rowid() as id").append(value);
+            if (value < batchSize) {
+                sb.append(",");
+            }
+        });
+
+        this.idQuery = sb.toString();
     }
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object obj)
             throws HibernateException {
         if (cachedIds.isEmpty()) {
-            StringBuilder sb = new StringBuilder("select ");
-            IntStream.rangeClosed(1, batchSize).forEach(value -> {
-                sb.append("unordered_unique_rowid() as id").append(value);
-                if (value < batchSize) {
-                    sb.append(",");
-                }
-            });
-            Stream<Object[]> ids = session.createNativeQuery(sb.toString()).stream();
+            Stream<Object[]> ids = session.createNativeQuery(idQuery).stream();
             ids.collect(Collectors.toList()).forEach(arr -> {
                 Arrays.stream(arr).forEach(o1 -> {
                     BigInteger bi = (BigInteger) o1;

@@ -8,10 +8,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "account_uuid")
+@DynamicInsert
+@DynamicUpdate
 public class GeneratedUUIDAccountEntity extends AccountEntity<UUID> {
     @Id
     @Column(name = "id", updatable = false, insertable = true)

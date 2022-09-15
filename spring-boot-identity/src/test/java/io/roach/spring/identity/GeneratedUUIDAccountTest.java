@@ -6,7 +6,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.roach.spring.identity.model.GeneratedUUIDAccountEntity;
 
-@ActiveProfiles({"test", "verbose"})
+@ActiveProfiles({"test"})
 public class GeneratedUUIDAccountTest extends AbstractAccountTest<GeneratedUUIDAccountEntity, UUID> {
     @Override
     protected GeneratedUUIDAccountEntity newInstance() {

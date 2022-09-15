@@ -4,7 +4,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.roach.spring.identity.model.NumericIDAccountEntity;
 
-@ActiveProfiles({"numid", "test", "verbose"})
+@ActiveProfiles({"numid", "test"})
 public class NumericIDAccountTest extends AbstractAccountTest<NumericIDAccountEntity, Long> {
     @Override
     protected NumericIDAccountEntity newInstance() {
