@@ -30,6 +30,7 @@
         <module>spring-boot-transactions</module>
         <module>spring-boot-outbox</module>
         <module>spring-boot-identity</module>
+        <module>spring-boot-pooling</module>
     </modules>
 
     <dependencyManagement>
