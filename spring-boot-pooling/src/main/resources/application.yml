@@ -15,16 +15,18 @@ spring:
     clean-on-validation-error: true
     baseline-on-migrate: true
     clean-disabled: false
-
+  jpa:
+    open-in-view: false
   datasource:
     url: jdbc:postgresql://localhost:26257/spring_boot?sslmode=disable
     driver-class-name: org.postgresql.Driver
     username: root
     password:
-    hikari:
-      maximum-pool-size: 50
-      minimum-idle: 25
-      max-lifetime: 1800000
+# Configured programmatically
+#    hikari:
+#      maximum-pool-size: 50
+#      minimum-idle: 25
+#      max-lifetime: 1800000
 #############################
 management:
   endpoints:

@@ -45,6 +45,11 @@ public class DataSourceConfiguration {
         ds.setPoolName("spring-boot-pooling");
         ds.setMaximumPoolSize(50);// Should be cluster_total_vcpus * 4 / num_pool_instances
         ds.setMinimumIdle(25); // Should be same as maxPoolSize for fixed-sized pool
+        // Applies if min idle < max pool size
+        ds.setKeepaliveTime(60000);
+        ds.setMaxLifetime(1800000);
+        ds.setConnectionTimeout(10000);
+        ds.setConnectionInitSql("select 1");
         ds.setAutoCommit(false); // Paired with Environment.CONNECTION_PROVIDER_DISABLES_AUTOCOMMIT=false
 
         ds.addDataSourceProperty("reWriteBatchedInserts", "true");
