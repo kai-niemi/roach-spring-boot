@@ -43,6 +43,11 @@ public class IndexController {
                 .withRel("accounts")
                 .withTitle("Paginated collection of registered accounts"));
 
+        index.add(linkTo(methodOn(AccountController.class)
+                .longPoll(15))
+                .withRel("long-poll")
+                .withTitle("Claim and hold connection for time period"));
+
         index.add(linkTo(methodOn(getClass())
                 .databaseMetadata()).withRel("database-info")
                 .withTitle("Database and JDBC driver metadata"));

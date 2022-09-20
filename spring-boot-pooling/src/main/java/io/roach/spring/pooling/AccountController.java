@@ -2,6 +2,8 @@ package io.roach.spring.pooling;
 
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.afford;
@@ -31,6 +34,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping(path = "/account")
 public class AccountController {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private AccountService accountService;
 
@@ -39,13 +44,6 @@ public class AccountController {
 
     @Autowired
     private PagedResourcesAssembler<AccountEntity> pagedResourcesAssembler;
-
-    @GetMapping(value = "/{id}")
-    public HttpEntity<EntityModel<AccountEntity>> findAccount(@PathVariable("id") UUID id) {
-        AccountEntity account = accountService.findById(id);
-        return new ResponseEntity<>(accountResourceAssembler
-                .toModel(account), HttpStatus.OK);
-    }
 
     @GetMapping
     public HttpEntity<PagedModel<EntityModel<AccountEntity>>> findAll(
@@ -57,6 +55,13 @@ public class AccountController {
                 .andAffordance(afford(methodOn(AccountController.class).createAccount(null))));
 
         return ResponseEntity.ok(model);
+    }
+
+    @GetMapping(value = "/{id}")
+    public HttpEntity<EntityModel<AccountEntity>> findAccount(@PathVariable("id") UUID id) {
+        AccountEntity account = accountService.findById(id);
+        return new ResponseEntity<>(accountResourceAssembler
+                .toModel(account), HttpStatus.OK);
     }
 
     @PostMapping
@@ -92,6 +97,14 @@ public class AccountController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteAccount(@PathVariable("id") UUID id) {
         accountService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/poll")
+    public ResponseEntity<Void> longPoll(@RequestParam(name = "delay", defaultValue = "60") int delaySeconds) {
+        logger.info("Entering wait for {} sec while holding connection", delaySeconds);
+        accountService.simulateProcessingDelay(delaySeconds);
+        logger.info("Exited wait for {} sec", delaySeconds);
         return ResponseEntity.ok().build();
     }
 }

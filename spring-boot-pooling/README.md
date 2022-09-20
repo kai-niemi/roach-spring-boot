@@ -42,7 +42,10 @@ Alternatively, start the server with custom parameters:
     target/spring-boot-pooling.jar \ 
     --spring.profiles.active=verbose \
     --server.port=8090 \
-    --roach.datasource.url=jdbc:postgresql://192.168.1.2:26257/spring_boot?sslmode=disable    
+    --roach.datasource.url=jdbc:postgresql://192.168.1.2:26257/spring_boot?sslmode=disable \
+    --spring.datasource.hikari.maximum-pool-size=45 \
+    --spring.datasource.hikari.minimum-idle=25 \
+    --spring.datasource.hikari.max-lifetime=1800005
 
 The REST API index is now available on:
 

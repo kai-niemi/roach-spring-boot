@@ -22,11 +22,12 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: root
     password:
-# Configured programmatically
-#    hikari:
-#      maximum-pool-size: 50
-#      minimum-idle: 25
-#      max-lifetime: 1800000
+    hikari:
+# Should be cluster_total_vcpus * 4 / num_pool_instances
+      maximum-pool-size: 50
+# Should be same as maxPoolSize for fixed-sized pool
+      minimum-idle: 25
+      max-lifetime: 1800000
 #############################
 management:
   endpoints:

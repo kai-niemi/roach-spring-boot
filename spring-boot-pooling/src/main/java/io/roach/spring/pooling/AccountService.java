@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -73,5 +74,21 @@ public class AccountService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteAll() {
         accountRepository.deleteAllInBatch();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void simulateProcessingDelay(int delay) {
+        Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "No tx");
+
+        accountRepository.findAll(PageRequest.of(0,16)).getContent().forEach(accountEntity -> {
+            accountEntity.getName();
+        });
+
+        try {
+            Thread.sleep(delay*1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -4,8 +4,8 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -19,8 +19,10 @@ import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 public class DataSourceConfiguration {
     private final Logger sqlTraceLogger = LoggerFactory.getLogger("SQL_TRACE");
 
-    @Autowired
-    private DataSourceProperties properties;
+    @Bean
+    public DataSourceProperties dataSourceProperties() {
+        return new DataSourceProperties();
+    }
 
     @Bean
     @Primary
@@ -37,23 +39,29 @@ public class DataSourceConfiguration {
     }
 
     @Bean
+    @ConfigurationProperties("spring.datasource.hikari")
     public HikariDataSource hikariDataSource() {
-        HikariDataSource ds = properties
+        HikariDataSource ds = dataSourceProperties()
                 .initializeDataSourceBuilder()
                 .type(HikariDataSource.class)
                 .build();
         ds.setPoolName("spring-boot-pooling");
-        ds.setMaximumPoolSize(50);// Should be cluster_total_vcpus * 4 / num_pool_instances
-        ds.setMinimumIdle(25); // Should be same as maxPoolSize for fixed-sized pool
-        // Applies if min idle < max pool size
-        ds.setKeepaliveTime(60000);
-        ds.setMaxLifetime(1800000);
-        ds.setConnectionTimeout(10000);
-        ds.setConnectionInitSql("select 1");
-        ds.setAutoCommit(false); // Paired with Environment.CONNECTION_PROVIDER_DISABLES_AUTOCOMMIT=false
-
+        // Paired with Environment.CONNECTION_PROVIDER_DISABLES_AUTOCOMMIT=true
+        ds.setAutoCommit(false);
+        // Batch inserts (PSQL JDBC driver specific, case-sensitive)
         ds.addDataSourceProperty("reWriteBatchedInserts", "true");
+        // For observability in DB console
         ds.addDataSourceProperty("application_name", "Spring Boot Pooling");
+
+        // Configured via application.yml and CLI override
+//        ds.setMaximumPoolSize(50);
+//        ds.setMinimumIdle(25);
+
+        // Applies if min idle < max pool size
+//        ds.setKeepaliveTime(60000);
+//        ds.setMaxLifetime(1800000);
+//        ds.setConnectionTimeout(10000);
+//        ds.setConnectionInitSql("select 1");
 
         return ds;
     }
