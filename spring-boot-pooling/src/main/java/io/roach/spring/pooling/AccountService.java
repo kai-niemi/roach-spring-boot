@@ -39,9 +39,10 @@ public class AccountService {
                 () -> new IllegalArgumentException("No such account: " + id));
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public Page<AccountEntity> findPage(Pageable pageable) {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "No tx");
+        Assert.isTrue(TransactionSynchronizationManager.isCurrentTransactionReadOnly(), "Not rox");
         return accountRepository.findAll(pageable);
     }
 

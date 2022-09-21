@@ -114,4 +114,18 @@ public class AccountEntity extends AbstractEntity<UUID> {
     public void setClosed(boolean closed) {
         this.closed = closed;
     }
+
+    @Override
+    public String toString() {
+        return "AccountEntity{" +
+                "id=" + id +
+                ", balance=" + balance +
+                ", creationTime=" + creationTime +
+                ", updatedTime=" + updatedTime +
+                ", currency='" + currency + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", closed=" + closed +
+                '}';
+    }
 }

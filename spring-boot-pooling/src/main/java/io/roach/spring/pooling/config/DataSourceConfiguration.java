@@ -4,6 +4,8 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.actuate.jdbc.DataSourceHealthIndicator;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +20,11 @@ import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 @Configuration
 public class DataSourceConfiguration {
     private final Logger sqlTraceLogger = LoggerFactory.getLogger("SQL_TRACE");
+
+    @Bean
+    public HealthIndicator dataSourceHealthIndicator() {
+        return new DataSourceHealthIndicator(primaryDataSource(),"select 1");
+    }
 
     @Bean
     public DataSourceProperties dataSourceProperties() {

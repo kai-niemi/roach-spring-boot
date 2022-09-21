@@ -20,7 +20,7 @@ create table account_uuid
 
 create table account_uuid_db
 (
-    id            uuid        not null default gen_random_uuid(),
+    id             uuid         not null default gen_random_uuid(),
     balance        float        not null,
     currency       varchar(3)   not null default 'USD',
     name           varchar(128) null,
@@ -36,7 +36,7 @@ create table account_uuid_db
 
 create table account_numid
 (
-    id            int         not null,
+    id             int          not null,
     balance        float        not null,
     currency       varchar(3)   not null default 'USD',
     name           varchar(128) null,
@@ -54,7 +54,7 @@ create sequence if not exists account_seq increment by 50 cache 10;
 
 create table account_sequence
 (
-    id            int         not null,
+    id             int          not null,
     balance        float        not null,
     currency       varchar(3)   not null default 'USD',
     name           varchar(128) null,

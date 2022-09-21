@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -82,13 +83,13 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(value = "/{id}/open")
+    @PutMapping(value = "/{id}/open")
     public ResponseEntity<?> openAccount(@PathVariable("id") UUID id) {
         accountService.updateStatus(id, false);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(value = "/{id}/close")
+    @PutMapping(value = "/{id}/close")
     public ResponseEntity<?> closeAccount(@PathVariable("id") UUID id) {
         accountService.updateStatus(id, true);
         return ResponseEntity.noContent().build();

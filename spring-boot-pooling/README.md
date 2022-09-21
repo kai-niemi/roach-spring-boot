@@ -39,27 +39,41 @@ Start the server using JPA and Hibernate (default):
 
 Alternatively, start the server with custom parameters:
 
-    target/spring-boot-pooling.jar \ 
-    --spring.profiles.active=verbose \
+    target/spring-boot-pooling.jar \
     --server.port=8090 \
-    --roach.datasource.url=jdbc:postgresql://192.168.1.2:26257/spring_boot?sslmode=disable \
+    --spring.profiles.active=verbose \
+    --spring.datasource.url=jdbc:postgresql://localhost:26257/spring_boot?sslmode=disable \
     --spring.datasource.hikari.maximum-pool-size=45 \
     --spring.datasource.hikari.minimum-idle=25 \
-    --spring.datasource.hikari.max-lifetime=1800005
+    --spring.datasource.hikari.max-lifetime=1800005 \
+    "$@"
 
-The REST API index is now available on:
+The REST API index is available at (explorable):
 
     http://localhost:8090/
 
-To create an account:
+To create one account:
 
-    curl -v -d '{"balance": 50.0,"currency": "USD","name": "some name","description": "some description"}' -H "Content-Type:application/json" -X POST http://localhost:8090/account
+    curl -d '{"balance": 50.0,"currency": "USD","name": "some name","description": "some description"}' -H "Content-Type:application/json" -X POST http://localhost:8090/account
+
+To create many accounts:
+
+    curl -d '{"numAccounts":100000,"batchSize":128}' -H "Content-Type:application/json" -X POST http://localhost:8090/workload 
+
+To list accounts (first page):
+
+    curl -X GET http://localhost:8090/account
 
 To inspect connection pool status:
 
-    curl -X GET http://localhost:8090/pool-size
+    curl -X GET http://localhost:8090/admin/pool-size
 
 To inspect connection pool config:
 
-    curl -X GET http://localhost:8090/pool-config
+    curl -X GET http://localhost:8090/admin/pool-config
 
+## Useful Tools
+
+- json-viewer chrome plugin - https://goo.gl/fmphc7
+- Postman HTTP client - https://www.postman.com/downloads/
+- cURL
