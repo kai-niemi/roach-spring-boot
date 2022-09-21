@@ -1,14 +1,13 @@
 package io.roach.spring.batch.config;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -43,16 +42,13 @@ public class DataSourceConfiguration {
     }
 
     @Bean
+    @ConfigurationProperties("spring.datasource.hikari")
     public HikariDataSource hikariDataSource() {
-        int poolSize = Runtime.getRuntime().availableProcessors() * 2;
-
         HikariDataSource ds = properties
                 .initializeDataSourceBuilder()
                 .type(HikariDataSource.class)
                 .build();
         ds.setPoolName("batch-statements");
-        ds.setMaximumPoolSize(poolSize);// Should be: cluster_total_vcpu * 4 / total_pool_number
-        ds.setMinimumIdle(poolSize / 2); // Should be maxPoolSize for fixed-sized pool
         ds.setAutoCommit(false);
 
         ds.addDataSourceProperty("reWriteBatchedInserts", multiValueInserts);
@@ -63,14 +59,5 @@ public class DataSourceConfiguration {
         ds.addDataSourceProperty("application_name", "Spring Batch Statements");
 
         return ds;
-    }
-
-    @PostConstruct
-    public void flywayMigrate() {
-        Flyway flyway = Flyway.configure()
-                .dataSource(hikariDataSource())
-                .load();
-        flyway.repair();
-        flyway.migrate();
     }
 }

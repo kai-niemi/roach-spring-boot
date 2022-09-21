@@ -88,6 +88,10 @@ public class Product extends AbstractEntity<UUID> {
         return id;
     }
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -107,6 +111,14 @@ public class Product extends AbstractEntity<UUID> {
     public int addInventoryQuantity(int qty) {
         this.inventory += qty;
         return inventory;
+    }
+
+    public int getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(int inventory) {
+        this.inventory = inventory;
     }
 
     @Override

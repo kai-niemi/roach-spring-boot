@@ -22,7 +22,7 @@ public class OrderSystemSmokeTest extends AbstractIntegrationTest {
     @BeforeAll
     public void setupTest() {
         testDoubles.deleteTestDoubles();
-        testDoubles.createProducts(100);
+        testDoubles.createProducts(100, product -> {});
         testDoubles.createCustomers(10);
     }
 

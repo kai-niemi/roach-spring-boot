@@ -3,6 +3,7 @@ package io.roach.spring.batch;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,12 @@ public class TestDoubles {
     }
 
     @TransactionBoundary
-    public void createProducts(int numProducts) {
-        IntStream.rangeClosed(1, numProducts).forEach(value -> productRepository.save(newProduct()));
+    public void createProducts(int numProducts, Consumer<Product> callback) {
+        IntStream.rangeClosed(1, numProducts).forEach(value -> {
+            Product p = newProduct();
+            callback.accept(p);
+            productRepository.save(p);
+        });
     }
 
     @TransactionBoundary

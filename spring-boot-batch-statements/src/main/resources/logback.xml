@@ -7,8 +7,8 @@
     <logger name="org.springframework" level="INFO"/>
 
     <springProfile name="verbose">
-<!--        <logger name="org.springframework.transaction.interceptor" level="TRACE"/>-->
-<!--        <logger name="org.springframework.orm.jpa" level="TRACE"/>-->
+        <logger name="org.springframework.transaction.interceptor" level="TRACE"/>
+        <logger name="org.springframework.orm.jpa" level="TRACE"/>
         <logger name="io.roach" level="TRACE"/>
         <logger name="io.roach.SQL_TRACE" level="TRACE"/>
     </springProfile>

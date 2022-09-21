@@ -21,7 +21,7 @@ public abstract class AbstractBatchStatementsTest extends AbstractIntegrationTes
         Assertions.assertFalse(TransactionSynchronizationManager.isActualTransactionActive(), "TX active");
 
         testDoubles.deleteTestDoubles();
-        testDoubles.createProducts(numProducts);
+        testDoubles.createProducts(numProducts, product -> {});
         testDoubles.createCustomers(numCustomers);
     }
 }

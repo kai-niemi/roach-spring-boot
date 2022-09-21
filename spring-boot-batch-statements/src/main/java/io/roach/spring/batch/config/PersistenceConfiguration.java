@@ -74,17 +74,14 @@ public class PersistenceConfiguration {
                     setProperty(Environment.ORDER_UPDATES, Boolean.TRUE.toString());
                     setProperty(Environment.BATCH_VERSIONED_DATA, Boolean.TRUE.toString());
                 }
-
                 setProperty(Environment.GENERATE_STATISTICS, Boolean.TRUE.toString());
                 setProperty(Environment.LOG_SESSION_METRICS, Boolean.FALSE.toString());
                 setProperty(Environment.CACHE_REGION_FACTORY, NoCachingRegionFactory.class.getName());
                 setProperty(Environment.USE_SECOND_LEVEL_CACHE, Boolean.FALSE.toString());
                 setProperty(Environment.USE_MINIMAL_PUTS, Boolean.TRUE.toString());
                 setProperty(Environment.FORMAT_SQL, Boolean.FALSE.toString());
-
                 // Mutes Postgres JPA Error (Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented).
                 setProperty(Environment.NON_CONTEXTUAL_LOB_CREATION, Boolean.TRUE.toString());
-
                 setProperty(Environment.CONNECTION_PROVIDER_DISABLES_AUTOCOMMIT, Boolean.TRUE.toString());
             }
         };
