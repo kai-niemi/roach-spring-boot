@@ -1,5 +1,6 @@
 package io.roach.spring.pooling.config;
 
+import java.util.Optional;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.orm.hibernate5.HibernateExceptionTranslator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -22,8 +25,14 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
+@EnableJpaAuditing(modifyOnCreate = false, auditorAwareRef = "auditorProvider")
 public class PersistenceConfiguration {
     private int batchSize = 32;
+
+    @Bean
+    public AuditorAware<String> auditorProvider() {
+        return () -> Optional.of("bobby_tables");
+    }
 
     @Bean
     public PersistenceExceptionTranslationPostProcessor persistenceExceptionTranslationPostProcessor() {

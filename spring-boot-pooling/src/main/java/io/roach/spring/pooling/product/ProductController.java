@@ -1,4 +1,4 @@
-package io.roach.spring.pooling;
+package io.roach.spring.pooling.product;
 
 import java.util.UUID;
 
@@ -33,78 +33,78 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(path = "/account")
-public class AccountController {
+@RequestMapping(path = "/product")
+public class ProductController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private AccountService accountService;
+    private ProductService productService;
 
     @Autowired
-    private AccountResourceAssembler accountResourceAssembler;
+    private ProductResourceAssembler productResourceAssembler;
 
     @Autowired
-    private PagedResourcesAssembler<AccountEntity> pagedResourcesAssembler;
+    private PagedResourcesAssembler<ProductEntity> pagedResourcesAssembler;
 
     @GetMapping
-    public HttpEntity<PagedModel<EntityModel<AccountEntity>>> findAll(
+    public HttpEntity<PagedModel<EntityModel<ProductEntity>>> findAll(
             @PageableDefault(size = 5, direction = Sort.Direction.ASC) Pageable page) {
-        PagedModel<EntityModel<AccountEntity>> model = pagedResourcesAssembler
-                .toModel(accountService.findPage(page), accountResourceAssembler);
+        PagedModel<EntityModel<ProductEntity>> model = pagedResourcesAssembler
+                .toModel(productService.findPage(page), productResourceAssembler);
 
-        model.add(linkTo(methodOn(AccountController.class).findAll(page)).withRel(IanaLinkRelations.FIRST)
-                .andAffordance(afford(methodOn(AccountController.class).createAccount(null))));
+        model.add(linkTo(methodOn(ProductController.class).findAll(page)).withRel(IanaLinkRelations.FIRST)
+                .andAffordance(afford(methodOn(ProductController.class).createProduct(null))));
 
         return ResponseEntity.ok(model);
     }
 
     @GetMapping(value = "/{id}")
-    public HttpEntity<EntityModel<AccountEntity>> findAccount(@PathVariable("id") UUID id) {
-        AccountEntity account = accountService.findById(id);
-        return new ResponseEntity<>(accountResourceAssembler
-                .toModel(account), HttpStatus.OK);
+    public HttpEntity<EntityModel<ProductEntity>> findProduct(@PathVariable("id") UUID id) {
+        ProductEntity product = productService.findById(id);
+        return new ResponseEntity<>(productResourceAssembler
+                .toModel(product), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<EntityModel<AccountEntity>> createAccount(@RequestBody AccountEntity account) {
-        account = accountService.createOne(account);
+    public ResponseEntity<EntityModel<ProductEntity>> createProduct(@RequestBody ProductEntity product) {
+        product = productService.createOne(product);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(accountResourceAssembler.toModel(account));
+                .body(productResourceAssembler.toModel(product));
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<?> updateAccount(@PathVariable("id") UUID id,
-                                           @RequestBody AccountEntity account) {
+    public ResponseEntity<?> updateProduct(@PathVariable("id") UUID id,
+                                           @RequestBody ProductEntity product) {
         Assert.isTrue(!TransactionSynchronizationManager.isActualTransactionActive(), "Tx active");
 
-        account.setId(id);
-        accountService.update(account);
+        product.setId(id);
+        productService.update(product);
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}/open")
-    public ResponseEntity<?> openAccount(@PathVariable("id") UUID id) {
-        accountService.updateStatus(id, false);
+    public ResponseEntity<?> openProduct(@PathVariable("id") UUID id) {
+        productService.updateStatus(id, true);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}/close")
-    public ResponseEntity<?> closeAccount(@PathVariable("id") UUID id) {
-        accountService.updateStatus(id, true);
+    public ResponseEntity<?> closeProduct(@PathVariable("id") UUID id) {
+        productService.updateStatus(id, false);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable("id") UUID id) {
-        accountService.delete(id);
+    public ResponseEntity<Void> deleteProduct(@PathVariable("id") UUID id) {
+        productService.delete(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "/poll")
     public ResponseEntity<Void> longPoll(@RequestParam(name = "delay", defaultValue = "60") int delaySeconds) {
         logger.info("Entering wait for {} sec while holding connection", delaySeconds);
-        accountService.simulateProcessingDelay(delaySeconds);
+        productService.simulateProcessingDelay(delaySeconds);
         logger.info("Exited wait for {} sec", delaySeconds);
         return ResponseEntity.ok().build();
     }

@@ -1,4 +1,4 @@
-package io.roach.spring.pooling;
+package io.roach.spring.pooling.product;
 
 import java.util.UUID;
 
@@ -9,5 +9,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
-public interface AccountRepository extends JpaRepository<AccountEntity, UUID> {
+public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
 }

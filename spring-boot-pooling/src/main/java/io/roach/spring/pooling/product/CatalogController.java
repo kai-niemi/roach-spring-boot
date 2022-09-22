@@ -1,11 +1,14 @@
-package io.roach.spring.pooling;
+package io.roach.spring.pooling.product;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.LongStream;
 
@@ -21,27 +24,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import static io.roach.spring.pooling.util.TimeUtils.millisecondsToDisplayString;
+
 @RestController
-@RequestMapping(value = "/workload")
-public class WorkloadController {
+@RequestMapping(value = "/catalog")
+public class CatalogController {
     private static final Base64.Encoder ENCODER = Base64.getUrlEncoder().withoutPadding();
 
     private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
     @Autowired
-    private AccountService accountService;
+    private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<WorkloadForm> getFormTemplate(@RequestParam Map<String, String> requestParams) {
-        WorkloadForm form = new WorkloadForm();
+    public ResponseEntity<CatalogForm> getFormTemplate(@RequestParam Map<String, String> requestParams) {
+        CatalogForm form = new CatalogForm();
         form.setBatchSize(128);
-        form.setNumAccounts(5_000);
-        form.setDescription("Create account batches");
+        form.setNumProducts(5_000);
+        form.setDescription("Create product catalog");
         return ResponseEntity.ok(form);
     }
 
     @PostMapping
-    public ResponseEntity<StreamingResponseBody> submitForm(@RequestBody WorkloadForm form) {
+    public ResponseEntity<StreamingResponseBody> submitForm(@RequestBody CatalogForm form) {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
@@ -51,37 +56,47 @@ public class WorkloadController {
                 .body(outputStream -> processForm(form, outputStream));
     }
 
-    private void processForm(WorkloadForm form, OutputStream outputStream) {
+    private void processForm(CatalogForm form, OutputStream outputStream) {
         PrintWriter pw = new PrintWriter(outputStream, true);
-        pw.printf("Creating %,d accounts with batch size %d\n", form.getNumAccounts(), form.getBatchSize());
+        pw.printf("Creating %,d products with batch size %d\n",
+                form.getNumProducts(), form.getBatchSize());
 
-        int batchSize = form.getBatchSize();
-        int numAccounts = 0;
-        while (numAccounts < form.getNumAccounts()) {
-            batchSize = Math.min(Math.abs(form.getNumAccounts() - numAccounts), batchSize);
-            numAccounts += batchSize;
+        final long startTime = System.nanoTime();
 
-            accountService.createAll(createBatch(batchSize));
+        try {
+            int batchSize = form.getBatchSize();
+            int numProducts = 0;
+            while (numProducts < form.getNumProducts()) {
+                batchSize = Math.min(Math.abs(form.getNumProducts() - numProducts), batchSize);
+                numProducts += batchSize;
 
-            pw.println(numAccounts);
-            pw.flush();
+                productService.createAll(createBatch(batchSize));
+
+                pw.println(numProducts);
+            }
+        } finally {
+            pw.printf("[Done] %,d products with batch size %d in %s\n",
+                    form.getNumProducts(),
+                    form.getBatchSize(),
+                    millisecondsToDisplayString(Duration.ofNanos(System.nanoTime() - startTime).toMillis()));
         }
-
-        pw.println("Done");
     }
 
-    private List<AccountEntity> createBatch(int size) {
-        List<AccountEntity> batch = new ArrayList<>();
+    private List<ProductEntity> createBatch(int size) {
+        List<ProductEntity> batch = new ArrayList<>();
         LongStream.rangeClosed(1, size).forEach(value -> batch.add(createInstance()));
         return batch;
     }
 
-    private AccountEntity createInstance() {
-        AccountEntity instance = new AccountEntity();
-        instance.setBalance(RANDOM.nextDouble(100.00, 5000.00));
+    private ProductEntity createInstance() {
+        ProductEntity instance = new ProductEntity();
+        instance.setPrice(BigDecimal.valueOf(RANDOM.nextDouble(100.00, 5000.00)));
         instance.setCurrency("USD");
         instance.setName(randomName(32));
         instance.setDescription(randomName(64));
+        instance.setInventory(RANDOM.nextInt(10,500));
+        instance.setSku(UUID.randomUUID().toString());
+        instance.setForSale(true);
         return instance;
     }
 

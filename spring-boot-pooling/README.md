@@ -1,7 +1,7 @@
 # CockroachDB Spring Boot :: Connection Pooling
 
 A standalone spring boot app demonstrating connection pooling 
-with hCockroachDB.
+with CockroachDB.
 
 # Project Setup
 
@@ -52,17 +52,17 @@ The REST API index is available at (explorable):
 
     http://localhost:8090/
 
-To create one account:
+To create one product:
 
-    curl -d '{"balance": 50.0,"currency": "USD","name": "some name","description": "some description"}' -H "Content-Type:application/json" -X POST http://localhost:8090/account
+    curl -d '{"balance": 50.0,"currency": "USD","name": "some name","description": "some description"}' -H "Content-Type:application/json" -X POST http://localhost:8090/product
 
-To create many accounts:
+To create many products:
 
-    curl -d '{"numAccounts":100000,"batchSize":128}' -H "Content-Type:application/json" -X POST http://localhost:8090/workload 
+    curl -d '{"numProducts":10000,"batchSize":128}' -H "Content-Type:application/json" -X POST http://localhost:8090/catalog 
 
-To list accounts (first page):
+To list products (first page):
 
-    curl -X GET http://localhost:8090/account
+    curl -X GET http://localhost:8090/product
 
 To inspect connection pool status:
 

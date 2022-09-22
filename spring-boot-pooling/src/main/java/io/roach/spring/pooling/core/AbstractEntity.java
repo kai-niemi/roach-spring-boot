@@ -1,4 +1,4 @@
-package io.roach.spring.pooling;
+package io.roach.spring.pooling.core;
 
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PostLoad;

@@ -1,18 +1,18 @@
-package io.roach.spring.pooling;
+package io.roach.spring.pooling.product;
 
-public class WorkloadForm {
-    private int numAccounts;
+public class CatalogForm {
+    private int numProducts;
 
     private int batchSize;
 
     private String description;
 
-    public int getNumAccounts() {
-        return numAccounts;
+    public int getNumProducts() {
+        return numProducts;
     }
 
-    public void setNumAccounts(int numAccounts) {
-        this.numAccounts = numAccounts;
+    public void setNumProducts(int numProducts) {
+        this.numProducts = numProducts;
     }
 
     public int getBatchSize() {

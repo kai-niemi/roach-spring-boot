@@ -1,7 +1,6 @@
-package io.roach.spring.pooling;
+package io.roach.spring.pooling.product;
 
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,73 +15,72 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.util.Assert;
 
 @Service
-public class AccountService {
+public class ProductService {
     @Autowired
-    private AccountRepository accountRepository;
+    private ProductRepository productRepository;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public AccountEntity createOne(AccountEntity account) {
+    public ProductEntity createOne(ProductEntity product) {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "No tx");
-        return accountRepository.save(account);
+        return productRepository.save(product);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public List<AccountEntity> createAll(Iterable<AccountEntity> accounts) {
+    public List<ProductEntity> createAll(Iterable<ProductEntity> products) {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "No tx");
-        return accountRepository.saveAll(accounts);
+        return productRepository.saveAll(products);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public AccountEntity findById(UUID id) {
+    public ProductEntity findById(UUID id) {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "No tx");
-        return accountRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("No such account: " + id));
+        return productRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("No such product: " + id));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
-    public Page<AccountEntity> findPage(Pageable pageable) {
+    public Page<ProductEntity> findPage(Pageable pageable) {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "No tx");
         Assert.isTrue(TransactionSynchronizationManager.isCurrentTransactionReadOnly(), "Not rox");
-        return accountRepository.findAll(pageable);
+        return productRepository.findAll(pageable);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void update(AccountEntity account) {
+    public void update(ProductEntity product) {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "No tx");
-        AccountEntity persistentAccount = accountRepository.getReferenceById(account.getId());
-        persistentAccount.setName(account.getName());
-        persistentAccount.setBalance(account.getBalance());
-        persistentAccount.setDescription(account.getDescription());
-        persistentAccount.setClosed(account.isClosed());
-        persistentAccount.setCurrency(account.getCurrency());
-        persistentAccount.setUpdatedTime(LocalDateTime.now());
+        ProductEntity productProxy = productRepository.getReferenceById(product.getId());
+        productProxy.setName(product.getName());
+        productProxy.setDescription(product.getDescription());
+        productProxy.setInventory(product.getInventory());
+        productProxy.setPrice(product.getPrice());
+        productProxy.setCurrency(product.getCurrency());
+        productProxy.setForSale(product.isForSale());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updateStatus(UUID id, boolean closed) {
+    public void updateStatus(UUID id, boolean forSale) {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "No tx");
-        AccountEntity persistentAccount = accountRepository.getReferenceById(id);
-        persistentAccount.setClosed(closed);
-        persistentAccount.setUpdatedTime(LocalDateTime.now());
+        ProductEntity productProxy = productRepository.getReferenceById(id);
+        productProxy.setForSale(forSale);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void delete(UUID id) {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "No tx");
-        accountRepository.deleteById(id);
+        productRepository.deleteById(id);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteAll() {
-        accountRepository.deleteAllInBatch();
+        productRepository.deleteAllInBatch();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void simulateProcessingDelay(int delay) {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "No tx");
 
-        accountRepository.findAll(PageRequest.of(0,16)).getContent().forEach(accountEntity -> {
-            accountEntity.getName();
+        productRepository.findAll(PageRequest.of(0,16)).getContent().forEach(productEntity -> {
+            productEntity.getName();
         });
 
         try {
