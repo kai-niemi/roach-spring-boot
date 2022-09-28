@@ -1,4 +1,4 @@
-package io.roach.spring.pooling;
+package io.roach.spring.pooling.base;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

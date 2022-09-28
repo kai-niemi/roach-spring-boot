@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.hibernate5.HibernateExceptionTranslator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -25,9 +25,13 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-@EnableJpaAuditing(modifyOnCreate = false, auditorAwareRef = "auditorProvider")
-public class PersistenceConfiguration {
-    private int batchSize = 32;
+public class PersistenceConfig {
+    private final int batchSize = 32;
+
+    @Bean
+    public JdbcTemplate jdbcTemplate(@Autowired DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
 
     @Bean
     public AuditorAware<String> auditorProvider() {
@@ -42,14 +46,6 @@ public class PersistenceConfiguration {
     @Bean
     public HibernateExceptionTranslator hibernateExceptionTranslator() {
         return new HibernateExceptionTranslator();
-    }
-
-    @Bean
-    public PlatformTransactionManager transactionManager(@Autowired EntityManagerFactory emf) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(emf);
-        transactionManager.setJpaDialect(new HibernateJpaDialect());
-        return transactionManager;
     }
 
     @Bean
@@ -85,9 +81,18 @@ public class PersistenceConfiguration {
                 setProperty(Environment.USE_SECOND_LEVEL_CACHE, "false");
                 setProperty(Environment.USE_MINIMAL_PUTS, "true");
                 setProperty(Environment.FORMAT_SQL, "false");
-                setProperty(Environment.NON_CONTEXTUAL_LOB_CREATION, "true"); // in dialect also
+                setProperty(Environment.NON_CONTEXTUAL_LOB_CREATION, "true");
                 setProperty(Environment.CONNECTION_PROVIDER_DISABLES_AUTOCOMMIT, "true");
             }
         };
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(@Autowired EntityManagerFactory emf) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(emf);
+        transactionManager.setJpaDialect(new HibernateJpaDialect());
+        transactionManager.setValidateExistingTransaction(true);
+        return transactionManager;
     }
 }

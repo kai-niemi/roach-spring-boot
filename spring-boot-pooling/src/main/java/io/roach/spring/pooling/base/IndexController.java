@@ -1,4 +1,4 @@
-package io.roach.spring.pooling;
+package io.roach.spring.pooling.base;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.RepresentationModel;
@@ -26,15 +26,15 @@ public class IndexController {
                 .withRel("products")
                 .withTitle("Paginated collection of products"));
 
-        index.add(linkTo(methodOn(CatalogController.class)
-                .submitForm(null))
-                .withRel("product-catalog")
-                .withTitle("Product catalog builder"));
-
         index.add(linkTo(methodOn(ProductController.class)
                 .longPoll(15))
-                .withRel("products-poll")
+                .withRel("long-poll")
                 .withTitle("Claim and hold connection for a time period"));
+
+        index.add(linkTo(methodOn(CatalogController.class)
+                .home())
+                .withRel("product-catalog")
+                .withTitle("Product catalog"));
 
         index.add(linkTo(methodOn(AdminController.class)
                 .index())

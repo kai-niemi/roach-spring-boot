@@ -54,7 +54,7 @@ The REST API index is available at (explorable):
 
 To create one product:
 
-    curl -d '{"balance": 50.0,"currency": "USD","name": "some name","description": "some description"}' -H "Content-Type:application/json" -X POST http://localhost:8090/product
+    curl -d '{"price": 50.0,"currency": "USD","name": "some name","description": "some description"}' -H "Content-Type:application/json" -X POST http://localhost:8090/product
 
 To create many products:
 
@@ -77,3 +77,4 @@ To inspect connection pool config:
 - json-viewer chrome plugin - https://goo.gl/fmphc7
 - Postman HTTP client - https://www.postman.com/downloads/
 - cURL
+

@@ -67,6 +67,9 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<EntityModel<ProductEntity>> createProduct(@RequestBody ProductEntity product) {
+        if (product.getSku() == null) {
+            product.setSku(UUID.randomUUID().toString());
+        }
         product = productService.createOne(product);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productResourceAssembler.toModel(product));

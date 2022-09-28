@@ -18,12 +18,12 @@ import net.ttddyy.dsproxy.listener.logging.SLF4JLogLevel;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 
 @Configuration
-public class DataSourceConfiguration {
+public class DataSourceConfig {
     private final Logger sqlTraceLogger = LoggerFactory.getLogger("SQL_TRACE");
 
     @Bean
     public HealthIndicator dataSourceHealthIndicator() {
-        return new DataSourceHealthIndicator(primaryDataSource(),"select 1");
+        return new DataSourceHealthIndicator(primaryDataSource(), "select 1");
     }
 
     @Bean

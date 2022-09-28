@@ -24,10 +24,11 @@ spring:
     password:
     hikari:
 # Should be cluster_total_vcpus * 4 / num_pool_instances
-      maximum-pool-size: 12
+      maximum-pool-size: 15
 # Should be same as maxPoolSize for fixed-sized pool
       minimum-idle: 10
       max-lifetime: 1800000
+      connection-timeout: 10000
 #############################
 management:
   endpoints:
@@ -40,8 +41,9 @@ server:
   port: 8090
   error:
     whitelabel:
-      enabled: true
+      enabled: false
     include-stacktrace: always
+    path: /error
 #############################
 logging:
   pattern:

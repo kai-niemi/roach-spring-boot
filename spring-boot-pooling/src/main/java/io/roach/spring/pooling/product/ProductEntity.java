@@ -17,7 +17,7 @@ import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import io.roach.spring.pooling.core.AbstractAuditableEntity;
+import io.roach.spring.pooling.base.AbstractAuditableEntity;
 
 @Entity
 @Table(name = "product")

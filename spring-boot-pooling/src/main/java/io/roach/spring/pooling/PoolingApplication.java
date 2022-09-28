@@ -8,15 +8,21 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.core.Ordered;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @ComponentScan(basePackageClasses = PoolingApplication.class)
-@EnableJpaRepositories(basePackages = {"io.roach.spring.pooling"})
 @EnableAutoConfiguration
 @EnableConfigurationProperties
-@EnableTransactionManagement(proxyTargetClass = true)
+@EnableJpaRepositories(basePackages = {"io.roach.spring.pooling"},
+        enableDefaultTransactions = false)
+@EnableJpaAuditing(modifyOnCreate = false,
+        auditorAwareRef = "auditorProvider")
+@EnableTransactionManagement(proxyTargetClass = true,
+        order = Ordered.LOWEST_PRECEDENCE - 1)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class PoolingApplication implements CommandLineRunner {
     public static void main(String[] args) {
