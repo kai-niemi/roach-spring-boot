@@ -1,4 +1,4 @@
-package io.roach.spring.locking.util;
+package io.roach.spring.locking;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.time.Duration;

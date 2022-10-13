@@ -4,9 +4,9 @@
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
     <logger name="org.springframework" level="INFO"/>
-    <logger name="org.hibernate.internal" level="DEBUG"/>
 
     <springProfile name="verbose">
+        <logger name="org.hibernate.internal" level="DEBUG"/>
         <logger name="org.springframework.transaction.interceptor" level="TRACE"/>
         <logger name="org.springframework.orm.jpa" level="TRACE"/>
         <logger name="com.zaxxer.hikari" level="TRACE"/>
