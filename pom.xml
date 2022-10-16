@@ -21,6 +21,7 @@
     </properties>
 
     <modules>
+        <module>spring-boot-idempotency</module>
         <module>spring-boot-annotations</module>
         <module>spring-boot-annotations-demo</module>
         <module>spring-boot-multi-tenancy</module>
