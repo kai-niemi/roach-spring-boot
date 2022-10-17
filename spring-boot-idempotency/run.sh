@@ -12,17 +12,17 @@ ARGS="--server.port=8090 \
  --spring.datasource.hikari.max-lifetime=15000"
 
 if [ ! -f "$FILE" ]; then
-    chmod +x mvnw
     ../mvnw clean install
 fi
 
 fn_run(){
-  java -jar target/spring-boot-idempotency.jar $ARGS "$@"
+  java -jar $FILE $ARGS "$@"
 }
 
 fn_start(){
-  nohup java -jar target/spring-boot-idempotency.jar $ARGS "$@" > idempotency-stdout.log 2>&1 &
-  echo "$APP_NAME is running"
+  nohup java -jar $FILE $ARGS "$@" > idempotency-stdout.log 2>&1 &
+  echo "$APP_NAME is running. Type Ctrl+C to exit log tail"
+  tail -f idempotency-stdout.log
 }
 
 fn_stop(){

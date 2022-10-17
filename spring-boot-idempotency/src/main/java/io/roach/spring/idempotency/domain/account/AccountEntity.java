@@ -1,5 +1,6 @@
 package io.roach.spring.idempotency.domain.account;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -25,16 +26,7 @@ import io.roach.spring.idempotency.domain.common.LocalDateTimeSerializer;
 @Relation(value = "account",
         collectionRelation = "accounts")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-//@TypeDef(name = "custom_enum", typeClass = ShipmentStatusEnumType.class)
 public class AccountEntity extends AbstractEntity<Long> {
-//    public class ShipmentStatusEnumType extends org.hibernate.type.EnumType<ShipmentStatus> {
-//        @Override
-//        public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
-//                throws HibernateException, SQLException {
-//            st.setObject(index, value != null ? ((Enum<?>) value).name() : null, Types.OTHER);
-//        }
-//    }
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +35,7 @@ public class AccountEntity extends AbstractEntity<Long> {
 
     @Column(name = "balance")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private double balance;
+    private BigDecimal balance;
 
     @Column(name = "created_at", insertable = false)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -61,11 +53,11 @@ public class AccountEntity extends AbstractEntity<Long> {
         return this;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public AccountEntity setBalance(double balance) {
+    public AccountEntity setBalance(BigDecimal balance) {
         this.balance = balance;
         return this;
     }

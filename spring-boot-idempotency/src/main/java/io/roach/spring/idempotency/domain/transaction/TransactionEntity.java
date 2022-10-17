@@ -1,5 +1,6 @@
 package io.roach.spring.idempotency.domain.transaction;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.*;
@@ -34,7 +35,7 @@ public class TransactionEntity extends AbstractEntity<Long> {
 
     @Column(name = "amount")
 //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private double amount;
+    private BigDecimal amount;
 
     @Column(name = "type")
 //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -67,11 +68,11 @@ public class TransactionEntity extends AbstractEntity<Long> {
         this.account = account;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

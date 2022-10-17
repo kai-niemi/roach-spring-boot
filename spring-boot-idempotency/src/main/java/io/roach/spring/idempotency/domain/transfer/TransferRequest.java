@@ -1,5 +1,6 @@
 package io.roach.spring.idempotency.domain.transfer;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,12 +45,12 @@ public class TransferRequest extends RepresentationModel<TransferRequest> {
             return this;
         }
 
-        public AccountLegBuilder withAmount(Double amount) {
+        public AccountLegBuilder withAmount(BigDecimal amount) {
             this.instance.amount = amount;
             return this;
         }
 
-        public AccountLegBuilder withBalance(Double balance) {
+        public AccountLegBuilder withBalance(BigDecimal balance) {
             this.instance.balance = balance;
             return this;
         }
@@ -66,19 +67,19 @@ public class TransferRequest extends RepresentationModel<TransferRequest> {
     public static class AccountLeg {
         private Long id;
 
-        private Double balance;
+        private BigDecimal balance;
 
-        private Double amount;
+        private BigDecimal amount;
 
         public Long getId() {
             return id;
         }
 
-        public Double getBalance() {
+        public BigDecimal getBalance() {
             return balance;
         }
 
-        public Double getAmount() {
+        public BigDecimal getAmount() {
             return amount;
         }
     }

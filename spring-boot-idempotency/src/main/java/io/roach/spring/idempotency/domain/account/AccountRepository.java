@@ -1,5 +1,7 @@
 package io.roach.spring.idempotency.domain.account;
 
+import java.math.BigDecimal;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,5 +16,5 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
             + "where id = ?1 "
             + "returning balance",
             nativeQuery = true)
-    Double addAmount(Long id, Double balance);
+    BigDecimal addAmount(Long id, BigDecimal balance);
 }

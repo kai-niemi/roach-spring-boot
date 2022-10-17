@@ -1,5 +1,7 @@
 package io.roach.spring.idempotency.domain.account;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +85,8 @@ public class AccountController {
             List<AccountEntity> batch = new ArrayList<>();
             LongStream.rangeClosed(1, batchSize).forEach(value -> {
                 AccountEntity instance = new AccountEntity();
-                instance.setBalance(Math.floor(RANDOM.nextDouble(100, 1500)));
+                instance.setBalance(BigDecimal.valueOf(RANDOM.nextDouble(100, 1500))
+                        .setScale(2, RoundingMode.UNNECESSARY));
                 instance.setCreatedAt(LocalDateTime.now());
                 batch.add(instance);
             });

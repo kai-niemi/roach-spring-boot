@@ -1,5 +1,6 @@
 package io.roach.spring.idempotency.domain.transfer;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +71,10 @@ public class TransferController {
         TransferRequest.Builder builder = TransferRequest.builder();
 
         accountService.findAll(PageRequest.ofSize(4)).forEach(account -> {
-            builder.addLeg().withId(account.getId()).withAmount(0d).then();
+            builder.addLeg()
+                    .withId(account.getId())
+                    .withAmount(BigDecimal.ZERO)
+                    .then();
         });
 
         TransferRequest request = builder.build();
@@ -178,5 +182,20 @@ public class TransferController {
 
         return ResponseEntity.status(HttpStatus.CREATED).header("POE-Link", newTag.getId().toString())
                 .body(transactionEntityAssembler.toCollectionModel(entities));
+    }
+
+    @GetMapping(value = "/{tag}")
+    public ResponseEntity<CollectionModel<EntityModel<TransactionEntity>>> getTransferOutcome(
+            @PathVariable("tag") UUID tag) {
+        // Pre-condition check for idempotency
+        Optional<TransactionCollectionTag> poeTag = poeTagRepository.findById(tag);
+        if (poeTag.isPresent()) {
+            // Lookup original response
+            List<TransactionEntity> entities = poeTag.get().getBody();
+            return ResponseEntity.status(HttpStatus.OK).header("POE-Link", tag.toString())
+                    .body(transactionEntityAssembler.toCollectionModel(entities));
+        }
+
+        throw new UnknownTokenException("No such token: " + tag);
     }
 }

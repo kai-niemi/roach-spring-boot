@@ -62,21 +62,21 @@ public class TransactionServiceImpl implements TransactionService {
 
             updateBalance(account, leg.getAmount());
 
-            checksum = checksum.add(BigDecimal.valueOf(leg.getAmount()));
+            checksum = checksum.add(leg.getAmount());
 
             transactionRepository.save(transaction);
         }
 
-        if (!BigDecimal.ZERO.setScale(1, RoundingMode.UNNECESSARY).equals(checksum)) {
-            throw new IllegalTransferException("Sum of legs does not equal 0 but: " + checksum);
+        if (BigDecimal.ZERO.setScale(checksum.precision()).compareTo(checksum) != 0) {
+            throw new IllegalTransferException("Sum of legs must equal zero but got " + checksum);
         }
 
         return transactions;
     }
 
-    private void updateBalance(AccountEntity account, Double amount) {
-        double balance = accountRepository.addAmount(account.getId(), amount);
-        if (balance < 0) {
+    private void updateBalance(AccountEntity account, BigDecimal amount) {
+        BigDecimal balance = accountRepository.addAmount(account.getId(), amount);
+        if (balance.compareTo(BigDecimal.ZERO) < 0) {
             throw new NegativeBalanceException(
                     "Insufficient funds for " + account);
         }

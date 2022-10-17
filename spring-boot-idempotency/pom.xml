@@ -83,6 +83,7 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -118,6 +119,21 @@
                             </includes>
                         </fileset>
                     </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>true</executable>
+                    <mainClass>io.roach.spring.idempotency.IdempotencyApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
