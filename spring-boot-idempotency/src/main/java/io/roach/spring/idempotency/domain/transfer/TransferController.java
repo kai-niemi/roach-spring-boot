@@ -9,13 +9,17 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectUpdateSemanticsDataAccessException;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.JdbcUpdateAffectedIncorrectNumberOfRowsException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -194,6 +198,24 @@ public class TransferController {
             List<TransactionEntity> entities = poeTag.get().getBody();
             return ResponseEntity.status(HttpStatus.OK).header("POE-Link", tag.toString())
                     .body(transactionEntityAssembler.toCollectionModel(entities));
+        }
+
+        throw new UnknownTokenException("No such token: " + tag);
+    }
+
+    @PatchMapping(value = "/{tag}")
+    public ResponseEntity<EntityModel<TransactionCollectionTag>> updateTransferToken(
+            @PathVariable("tag") UUID tag) {
+        // Pre-condition check for idempotency
+        Optional<TransactionCollectionTag> poeTag = poeTagRepository.findById(tag);
+        if (poeTag.isPresent()) {
+            TransactionCollectionTag unboxedTag = poeTag.get();
+            if (poeTagRepository.increaseTTLInterval(unboxedTag.getId()) != 1) {
+                throw new IncorrectUpdateSemanticsDataAccessException("POE tag rows affected was not 1");
+            }
+            return ResponseEntity.ok()
+                    .header("POE-Link", tag.toString())
+                    .body(EntityModel.of(unboxedTag));
         }
 
         throw new UnknownTokenException("No such token: " + tag);
