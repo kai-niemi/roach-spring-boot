@@ -9,6 +9,7 @@ import org.springframework.hateoas.mediatype.hal.CurieProvider;
 import org.springframework.hateoas.mediatype.hal.DefaultCurieProvider;
 import org.springframework.hateoas.mediatype.hal.forms.HalFormsConfiguration;
 import org.springframework.hateoas.mediatype.hal.forms.HalFormsOptions;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -20,7 +21,7 @@ import io.roach.spring.idempotency.domain.transaction.TransactionEntity;
 @EnableHypermediaSupport(type = {
         EnableHypermediaSupport.HypermediaType.HAL_FORMS,
         EnableHypermediaSupport.HypermediaType.HAL})
-@EnableSpringDataWebSupport
+@EnableWebMvc
 @Configuration
 public class WebConfig {
     @Bean

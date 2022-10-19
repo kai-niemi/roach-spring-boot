@@ -52,7 +52,7 @@ public class DataSourceConfiguration {
         ds.addDataSourceProperty("prepStmtCacheSize", "250");
         ds.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         ds.addDataSourceProperty("useServerPrepStmts", "true");
-        ds.addDataSourceProperty("application_name", "Spring Boot Transactions");
+        ds.addDataSourceProperty("application_name", "Spring Boot Idempotency");
 
         return ds;
     }

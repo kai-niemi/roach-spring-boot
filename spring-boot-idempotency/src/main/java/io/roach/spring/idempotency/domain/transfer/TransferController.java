@@ -10,14 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectUpdateSemanticsDataAccessException;
-import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.JdbcUpdateAffectedIncorrectNumberOfRowsException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -82,10 +80,12 @@ public class TransferController {
         });
 
         TransferRequest request = builder.build();
-        request.add(linkTo(methodOn(getClass()).signTransferRequest(request)).withRel("transfer-form-signature")
+        request.add(linkTo(methodOn(getClass()).signTransferRequest(request))
+                .withRel("transfer-signature")
                 .withTitle("Sign request with current account states"));
         request.add(
-                linkTo(methodOn(getClass()).submitTransferRequest(UUID.randomUUID(), request)).withRel("transfer-once")
+                linkTo(methodOn(getClass()).submitTransferRequest(UUID.randomUUID(), request))
+                        .withRel("transfer-once")
                         .withTitle("Submit transfer request using POE tag"));
 
         return ResponseEntity.ok(request);
@@ -148,7 +148,8 @@ public class TransferController {
         // Proceed
         List<TransactionEntity> entities = transactionService.createTransactions(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(transactionEntityAssembler.toCollectionModel(entities));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(transactionEntityAssembler.toCollectionModel(entities));
     }
 
     @PostMapping(value = "/{tag}")
@@ -211,7 +212,7 @@ public class TransferController {
         if (poeTag.isPresent()) {
             TransactionCollectionTag unboxedTag = poeTag.get();
             if (poeTagRepository.increaseTTLInterval(unboxedTag.getId()) != 1) {
-                throw new IncorrectUpdateSemanticsDataAccessException("POE tag rows affected was not 1");
+                throw new IncorrectUpdateSemanticsDataAccessException("rows affected was not 1");
             }
             return ResponseEntity.ok()
                     .header("POE-Link", tag.toString())

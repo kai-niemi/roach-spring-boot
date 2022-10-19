@@ -100,7 +100,7 @@ public class PersistenceConfiguration {
         private static class CockroachDB221IdentityColumnSupport extends CockroachDB1920IdentityColumnSupport {
             @Override
             public String getIdentityInsertString() {
-                return "unique_rowid()";
+                return "unordered_unique_rowid()";
             }
         }
     }

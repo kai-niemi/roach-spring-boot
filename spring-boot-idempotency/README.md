@@ -3,6 +3,9 @@
 A standalone spring boot app demonstrating techniques for 
 idempotent POST methods in REST APIs.
 
+See this blog [post](https://blog.cloudneutral.se/) for an article 
+on this topic.
+
 # Project Setup
 
 ## Prerequisites
@@ -34,7 +37,6 @@ To build and deploy to your local Maven repo, execute:
 
 Start the server using JPA and Hibernate (default):
 
-    cd spring-boot-idempotency
     target/spring-boot-idempotency.jar
 
 Alternatively, start the server with custom parameters:
@@ -47,12 +49,11 @@ Alternatively, start the server with custom parameters:
 
 The REST API index is available at (explorable):
 
-    curl http://localhost:8090/
+    curl http://localhost:8090/ | jq
 
 ## Useful Tools
 
 - json-viewer chrome plugin - https://goo.gl/fmphc7
 - Postman HTTP client - https://www.postman.com/downloads/
-- cURL
-- jq
-
+- cURL - https://github.com/curl/curl
+- jq - https://github.com/stedolan/jq
