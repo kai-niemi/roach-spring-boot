@@ -10,19 +10,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import io.roach.spring.annotations.aspect.AdvisorOrder;
-
 @Configuration
 @EnableAutoConfiguration
 @EnableConfigurationProperties
-@EnableTransactionManagement(proxyTargetClass = true, order = AdvisorOrder.HIGH)
+@EnableTransactionManagement(proxyTargetClass = true)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @ComponentScan(basePackageClasses = LockingApplication.class)
 public class LockingApplication {
     public static void main(String[] args) {
         new SpringApplicationBuilder(LockingApplication.class)
                 .logStartupInfo(true)
-                .web(WebApplicationType.NONE)
+                .web(WebApplicationType.SERVLET)
                 .bannerMode(Banner.Mode.CONSOLE)
                 .run(args);
     }

@@ -11,17 +11,26 @@ spring:
     ansi:
       enabled: ALWAYS
   flyway:
-    enabled: false
+    enabled: true
     clean-on-validation-error: true
     baseline-on-migrate: true
+    clean-disabled: false
   jpa:
     open-in-view: false
     show-sql: false
   datasource:
     hikari:
       maximum-pool-size: 50
-      minimum-idle: 50
+      minimum-idle: 25
     driver-class-name: org.postgresql.Driver
+#############################
+server:
+  port: 8090
+  error:
+    whitelabel:
+      enabled: false
+    include-stacktrace: always
+    path: /error
 #############################
 logging:
   pattern:

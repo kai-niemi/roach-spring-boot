@@ -1,4 +1,4 @@
-package io.roach.spring.locking;
+package io.roach.spring.locking.domain;
 
 import java.io.Serializable;
 

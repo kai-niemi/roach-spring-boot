@@ -1,4 +1,3 @@
-
 create table product
 (
     id        uuid           not null default gen_random_uuid(),
@@ -11,6 +10,22 @@ create table product
     primary key (id)
 );
 
--- alter table product
---     add constraint check_product_positive_inventory check (product.inventory >= 0);
+insert into product (inventory,name,price,sku)
+select 10 + random() * 50,
+       md5(random()::text),
+       500.00 + random() * 500.00,
+       gen_random_uuid()::text
+from generate_series(1, 1500) as i;
 
+-- select * from product limit 10;
+
+create table shedlock
+(
+    name       varchar(64)  not null,
+    lock_until timestamp    not null,
+    locked_at  timestamp    not null,
+    locked_by  varchar(255) not null,
+    primary key (name)
+);
+
+-- select * from shedlock;

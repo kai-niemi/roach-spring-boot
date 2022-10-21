@@ -1,4 +1,4 @@
-package io.roach.spring.locking;
+package io.roach.spring.locking.domain;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -11,11 +11,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import io.roach.spring.annotations.TransactionService;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-@TransactionService
+@Transactional(propagation = Propagation.MANDATORY)
 public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("select p from Product p where p.id=:id")

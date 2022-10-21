@@ -1,5 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://kai-test-gc8.gcp-europe-west4.cockroachlabs.cloud:26257/spring_boot?sslmode=require
-    username: guest
-    password: ZV5W2am-Cdxyu01OClTlSQ

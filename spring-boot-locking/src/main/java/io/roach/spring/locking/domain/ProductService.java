@@ -1,4 +1,4 @@
-package io.roach.spring.locking;
+package io.roach.spring.locking.domain;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -9,15 +9,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
-
-import io.roach.spring.annotations.TransactionBoundary;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductService {
     @Autowired
     private ProductRepository productRepository;
                                                                                      
-    @TransactionBoundary(maxBackoff = 15000)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateProductWithOptimisticLock(UUID id, int qty) {
         Optional<Product> product = productRepository.getByIdOptimisticLock(id);
         int newQuantity = product.orElseThrow(() -> new ObjectRetrievalFailureException(Product.class, id))
@@ -27,7 +27,7 @@ public class ProductService {
         }
     }
 
-    @TransactionBoundary(maxBackoff = 15000)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateProductWithPessimisticLock(UUID id, int qty) {
         Product product = productRepository.getByIdWithPessimisticLock(id);
         int newQuantity = product.addInventoryQuantity(qty);
@@ -36,17 +36,17 @@ public class ProductService {
         }
     }
 
-    @TransactionBoundary(maxBackoff = 15000)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateProduct(UUID id, int qty) {
         productRepository.updateInventory(id, qty);
     }
 
-    @TransactionBoundary
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Page<Product> findAll(Pageable page) {
         return productRepository.findAll(page);
     }
 
-    @TransactionBoundary
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Product findOneProduct() {
         return productRepository.findAll(
                         PageRequest.of(1, 1))

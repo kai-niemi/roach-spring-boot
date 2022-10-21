@@ -9,23 +9,25 @@ import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
 
-import io.roach.spring.annotations.TransactionBoundary;
+import io.roach.spring.locking.domain.Product;
+import io.roach.spring.locking.domain.ProductRepository;
 
 @Service
 public class TestDoubles {
     @Autowired
     private ProductRepository productRepository;
 
-    @TransactionBoundary
+    @Transactional
     public void deleteTestDoubles() {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "TX not active");
         productRepository.deleteAllInBatch();
     }
 
-    @TransactionBoundary
+    @Transactional
     public void createProducts(int numProducts, int quantity, Consumer<Product> callback) {
         IntStream.rangeClosed(1, numProducts).forEach(value -> {
             Product p = productRepository.save(newProduct(quantity));

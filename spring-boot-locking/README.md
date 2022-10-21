@@ -1,4 +1,7 @@
-# CockroachDB Spring Boot :: Locking
+# CockroachDB Spring Boot :: Locks and Scheduling
+                                                 
+Spring Boot demo of cluster singleton scheduling using 
+shedlock, pessimistic vs optimistic locking, etc.
 
 ## Using
 

@@ -70,10 +70,10 @@ public class PersistenceConfiguration {
     private Properties jpaVendorProperties() {
         return new Properties() {
             {
-//                setProperty(Environment.STATEMENT_BATCH_SIZE, "24");
-//                setProperty(Environment.ORDER_INSERTS, Boolean.TRUE.toString());
-//                setProperty(Environment.ORDER_UPDATES, Boolean.TRUE.toString());
-//                setProperty(Environment.BATCH_VERSIONED_DATA, Boolean.TRUE.toString());
+                setProperty(Environment.STATEMENT_BATCH_SIZE, "64");
+                setProperty(Environment.ORDER_INSERTS, Boolean.TRUE.toString());
+                setProperty(Environment.ORDER_UPDATES, Boolean.TRUE.toString());
+                setProperty(Environment.BATCH_VERSIONED_DATA, Boolean.TRUE.toString());
 
                 setProperty(Environment.GENERATE_STATISTICS, Boolean.TRUE.toString());
                 setProperty(Environment.LOG_SESSION_METRICS, Boolean.FALSE.toString());

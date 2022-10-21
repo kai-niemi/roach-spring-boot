@@ -1,5 +1,5 @@
 ^__^
-(oo)\_______       CockroachDB Spring Boot :: Locks
+(oo)\_______       CockroachDB Spring Boot :: Locks and Scheduling
 (__)\       )\/\   ${application.formatted-version} powered by Spring Boot ${spring-boot.formatted-version}
    ||----w |
    ||     ||

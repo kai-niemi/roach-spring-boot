@@ -15,8 +15,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles({ProfileNames.CRDB_DEV, ProfileNames.VERBOSE})
-//@ActiveProfiles({ProfileNames.PSQL_DEV, ProfileNames.VERBOSE})
+import io.roach.spring.locking.domain.ProductService;
+import io.roach.spring.locking.domain.ProfileNames;
+
+@ActiveProfiles({ProfileNames.CRDB, ProfileNames.VERBOSE})
 public class LockingTest extends AbstractIntegrationTest {
     private static final int THREADS = Runtime.getRuntime().availableProcessors();
 
