@@ -1,0 +1,6 @@
+──▄──▄────▄▀
+───▀▄─█─▄▀▄▄▄
+▄██▄████▄██▄▀█▄   CockroachDB Spring Boot :: Tree Hierarchies using the Nested Set Model
+─▀▀─█▀█▀▄▀███▀    ${application.formatted-version} powered by Spring Boot ${spring-boot.formatted-version}
+──▄▄▀─█──▀▄▄
+
