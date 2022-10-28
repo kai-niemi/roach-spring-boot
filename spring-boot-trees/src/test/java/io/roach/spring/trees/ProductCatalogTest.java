@@ -212,18 +212,18 @@ public class ProductCatalogTest extends AbstractIntegrationTest {
         Product p1 = new Product();
         p1.setName("Basilisk Shiraz Mourvedre");
         p1.setSkuCode("BSL-MOURVEDRE");
-        p1.addTag("red-not-ugly");
+        p1.addTag("not-bad");
         p1.addTag("not-eco");
 
         productRepository.save(p1);
 
         ProductVariation p1v1 = p1.createVariation("BSL-MOURVEDRE-2005", Money.of("16.50", Money.EUR));
-        p1v1.setAttribute("color", "blood");
-        p1v1.setAttribute("taste", "not horrible");
+        p1v1.setAttribute("color", "red");
+        p1v1.setAttribute("taste", "not that terrible");
 
         ProductVariation p1v2 = p1.createVariation("BSL-MOURVEDRE-2006", Money.of("17.50", Money.EUR));
-        p1v2.setAttribute("color", "bloody");
-        p1v2.setAttribute("taste", "also not horrible");
+        p1v2.setAttribute("color", "red");
+        p1v2.setAttribute("taste", "not terrible");
 
         productVariationRepository.save(p1v1);
         productVariationRepository.save(p1v2);
@@ -233,7 +233,7 @@ public class ProductCatalogTest extends AbstractIntegrationTest {
         Product p2 = new Product();
         p2.setName("Pinot Gris Clos Windsbuhl Vendange Tardive Domaine Zind-Humbrecht, 2002");
         p2.setSkuCode("ZIND-HUM-2002");
-        p2.addTag("white-not-ugly");
+        p2.addTag("name-not-long-enough");
 
         productRepository.save(p2);
     }
@@ -444,10 +444,10 @@ public class ProductCatalogTest extends AbstractIntegrationTest {
     @Transactional
     @Commit
     public void whenFindByKeyword_expectResult() {
-        List<Product> products = productRepository.findByKeywords("red-not-ugly");
+        List<Product> products = productRepository.findByKeywords("not-bad");
         Assertions.assertEquals(1, products.size());
 
-        products = productRepository.findByKeywordsJPQL("red-not-ugly");
+        products = productRepository.findByKeywordsJPQL("not-bad");
         Assertions.assertEquals(1, products.size());
     }
 
@@ -482,7 +482,7 @@ public class ProductCatalogTest extends AbstractIntegrationTest {
         ProductVariation pv = productVariationRepository.getBySku("BSL-MOURVEDRE-2005");
         Assertions.assertNotNull(pv);
         Assertions.assertEquals(Money.of("16.50", Money.EUR), pv.getListPrice());
-        Assertions.assertEquals("blood", pv.getAttributes().get("color"));
+        Assertions.assertEquals("red", pv.getAttributes().get("color"));
 
         List<ProductVariation> variations = productVariationRepository.findByProductId(findFirstProduct().getId());
         Assertions.assertEquals(2, variations.size());

@@ -1,11 +1,14 @@
 package io.roach.spring.idempotency.domain.home;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import io.roach.spring.idempotency.domain.account.AccountController;
 import io.roach.spring.idempotency.domain.transaction.TransactionController;
@@ -35,6 +38,31 @@ public class IndexController {
                 .index())
                 .withRel("transfer")
                 .withTitle("Transfer workflow resource"));
+
+        index.add(Link.of(
+                        ServletUriComponentsBuilder
+                                .fromCurrentContextPath()
+                                .pathSegment("actuator")
+                                .buildAndExpand()
+                                .toUriString()
+                ).withRel("actuators")
+                .withTitle("Spring boot actuators for observability"));
+
+        final String rootUri =
+                ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .buildAndExpand()
+                        .toUriString();
+
+        index.add(Link.of(ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .pathSegment("browser/index.html")
+                        .fragment("theme=Cosmo&uri=" + rootUri)
+                        .buildAndExpand()
+                        .toUriString())
+                .withRel("hal-explorer")
+                .withTitle("Hypermedia API browser")
+                .withType(MediaType.TEXT_HTML_VALUE)
+        );
 
         return ResponseEntity.ok(index);
     }
