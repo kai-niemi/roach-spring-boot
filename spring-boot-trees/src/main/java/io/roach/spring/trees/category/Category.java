@@ -25,7 +25,7 @@ import io.roach.spring.trees.product.Product;
  * <p/>
  * Categories are used to group products in a product catalog.
  * <p/>
- * The category hierarchy (tree= is represented in the ER model using the <i>nested set model</i>
+ * The category hierarchy tree is represented in the ER model using the <i>nested set model</i>
  * approach. This approach provides for much more efficient SQL queries by removing the need
  * for recursive selects. Recursion is notoriously hard to model efficiently in a
  * relational model.

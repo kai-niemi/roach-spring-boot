@@ -10,7 +10,7 @@ spring:
       enabled: ALWAYS
 
   datasource:
-    url: jdbc:postgresql://localhost:26257/trees?sslmode=disable
+    url: jdbc:postgresql://localhost:26257/spring_boot?sslmode=disable
     driver-class-name: org.postgresql.Driver
     username: root
     password:

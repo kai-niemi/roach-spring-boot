@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -486,5 +487,15 @@ public class ProductCatalogTest extends AbstractIntegrationTest {
 
         List<ProductVariation> variations = productVariationRepository.findByProductId(findFirstProduct().getId());
         Assertions.assertEquals(2, variations.size());
+    }
+
+    @Test
+    @Order(20)
+    @Transactional
+    @Commit
+    public void whenListingEntireTree_expectTreeLayout() {
+        JdbcTemplate t = new JdbcTemplate();
+        t.update("", 2);
+        logger.info(categoryRepository.listTree());
     }
 }

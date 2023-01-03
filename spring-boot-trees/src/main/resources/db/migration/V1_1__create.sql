@@ -13,6 +13,9 @@ create table category
     primary key (id)
 );
 
+CREATE INDEX ON category (name) STORING (lft, rgt);
+CREATE INDEX ON category (category_type) STORING (name, description, lft, rgt, parent_id, country);
+
 create table categorized_product
 (
     category_id int not null,
