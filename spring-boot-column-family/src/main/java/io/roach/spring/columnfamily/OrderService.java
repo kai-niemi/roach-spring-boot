@@ -1,4 +1,4 @@
-package io.roach.spring.columnfamilies;
+package io.roach.spring.columnfamily;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -85,7 +85,7 @@ public class OrderService {
     }
 
     private String namedQuery(Class<?> orderType, String name) {
-        return orderType.getName().replace("io.roach.spring.columnfamilies.", "") + "." + name;
+        return orderType.getName().replace("io.roach.spring.columnfamily.", "") + "." + name;
     }
 
     public <T extends AbstractOrder> void updateOrderPrice(Class<T> orderType,

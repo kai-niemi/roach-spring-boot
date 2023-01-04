@@ -1,4 +1,4 @@
-package io.roach.spring.columnfamilies;
+package io.roach.spring.columnfamily;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

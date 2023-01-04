@@ -29,18 +29,18 @@ Clone the project:
 
 To build and deploy to your local Maven repo, execute:
 
-    cd spring-boot-column-families
+    cd spring-boot-column-family
     ./mvnw clean install
 
 ## Running
 
 Start the server using JPA and Hibernate (default):
 
-    target/spring-boot-column-families.jar
+    target/spring-boot-column-family.jar
 
 Alternatively, start the server with custom parameters:
 
-    target/spring-boot-column-families.jar \
+    target/spring-boot-column-family.jar \
     --server.port=8090 \
     --spring.profiles.active=verbose \
     --spring.datasource.url=jdbc:postgresql://localhost:26257/spring_boot?sslmode=disable \
@@ -60,7 +60,7 @@ The REST API index is available at (explorable):
 # Testing Procedure
 
 In this sequence of operations we are updating the same record concurrently on different columns. 
-With a single column family, it will fail with a 40001 error and with multiple column families, 
+With a single column family, it will fail with a 40001 error and with multiple column family, 
 it will succeed.
 
 ## Single Column Family Test

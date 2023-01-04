@@ -10,7 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>spring-boot-column-families</artifactId>
+    <artifactId>spring-boot-column-family</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -69,7 +69,7 @@
                 </executions>
                 <configuration>
                     <executable>true</executable>
-                    <mainClass>io.roach.spring.columnfamilies.ColumnFamilyApplication</mainClass>
+                    <mainClass>io.roach.spring.columnfamily.ColumnFamilyApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>

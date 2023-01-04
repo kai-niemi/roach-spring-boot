@@ -33,7 +33,7 @@
         <module>spring-boot-identity</module>
         <module>spring-boot-pooling</module>
         <module>spring-boot-trees</module>
-        <module>spring-boot-column-families</module>
+        <module>spring-boot-column-family</module>
     </modules>
 
     <dependencyManagement>

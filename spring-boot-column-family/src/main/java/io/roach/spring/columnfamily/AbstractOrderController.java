@@ -1,4 +1,4 @@
-package io.roach.spring.columnfamilies;
+package io.roach.spring.columnfamily;
 
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
