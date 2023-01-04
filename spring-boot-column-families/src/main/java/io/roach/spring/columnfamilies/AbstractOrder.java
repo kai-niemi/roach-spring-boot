@@ -10,7 +10,7 @@ import javax.persistence.*;
 public abstract class AbstractOrder extends AbstractEntity<Long> {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, updatable = false, name = "date_placed")
@@ -63,10 +63,14 @@ public abstract class AbstractOrder extends AbstractEntity<Long> {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status", length = 64)
-    private ShipmentStatus status = ShipmentStatus.PLACED;
+    private OrderStatus orderStatus = OrderStatus.PLACED;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDate getDatePlaced() {
@@ -137,12 +141,12 @@ public abstract class AbstractOrder extends AbstractEntity<Long> {
         this.totalPrice = this.totalPrice.add(increment);
     }
 
-    public ShipmentStatus getStatus() {
-        return status;
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setStatus(ShipmentStatus status) {
-        this.status = status;
+    public void setOrderStatus(OrderStatus status) {
+        this.orderStatus = status;
     }
 }
 

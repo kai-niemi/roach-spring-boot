@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -44,50 +46,88 @@ public class OrderService {
     }
 
     public <T extends AbstractOrder> T placeOrder(T order) {
-        entityManager.persist(order);
+        entityManager.merge(order);
         return order;
     }
 
-    public <T extends AbstractOrder> T updateOrderDetails(Class<T> orderType,
-                                                          Long orderId,
-                                                          ShipmentStatus status,
-                                                          BigDecimal increment,
-                                                          long commitDelay) {
+    public <T extends AbstractOrder> void updateOrderStatus(Class<T> orderType,
+                                                         Long orderId,
+                                                         long commitDelay) {
         Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "Expected transaction!");
 
-        T order = entityManager.find(orderType, orderId);
-        if (order == null) {
-            throw new ObjectRetrievalFailureException(Order1.class, orderId);
-        }
+        TypedQuery<Object[]> q = entityManager.createNamedQuery(namedQuery(orderType, "findByIdForUpdateStatus"),
+                Object[].class);
+        q.setParameter(1, orderId);
+
+        Object[] result = q.getSingleResult();
+
+        OrderStatus status = (OrderStatus) result[1];
+        status = status.next();
 
         if (commitDelay > 0) {
-            logger.info("Reading order id [{}] with status [{}] and total [{}] - waiting {} sec before commit",
-                    order.getId(),
-                    order.getStatus(),
-                    order.getTotalPrice(),
+            logger.info("Reading order [{}] for updating status to [{}] - waiting {} sec before commit",
+                    StringUtils.arrayToDelimitedString(result, ","),
+                    status,
                     commitDelay);
+            thinkTime(commitDelay);
+            logger.info("Proceeding with commit");
+        }
+
+        entityManager
+                .createQuery("update " + orderType.getSimpleName()
+                        + " o set o.orderStatus = :status"
+                        + " where o.id = :id")
+                .setParameter("status", status)
+                .setParameter("id", orderId)
+                .executeUpdate();
+
+        entityManager.flush();
+    }
+
+    private String namedQuery(Class<?> orderType, String name) {
+        return orderType.getName().replace("io.roach.spring.columnfamilies.", "") + "." + name;
+    }
+
+    public <T extends AbstractOrder> void updateOrderPrice(Class<T> orderType,
+                                                        Long orderId,
+                                                        BigDecimal price,
+                                                        long commitDelay) {
+        Assert.isTrue(TransactionSynchronizationManager.isActualTransactionActive(), "Expected transaction!");
+
+        TypedQuery<Object[]> q = entityManager.createNamedQuery(namedQuery(orderType, "findByIdForUpdatePrice"),
+                Object[].class);
+        q.setParameter(1, orderId);
+
+        Object[] result = q.getSingleResult();
+
+        if (commitDelay > 0) {
+            logger.info("Reading order [{}] for incrementing price to [{}] - waiting {} sec before commit",
+                    StringUtils.arrayToDelimitedString(result, ","),
+                    price,
+                    commitDelay);
+            thinkTime(commitDelay);
+            logger.info("Proceeding with commit");
+        }
+
+        entityManager
+                .createQuery("update " + orderType.getSimpleName()
+                        + " o set o.totalPrice = o.totalPrice + :price"
+                        + " where o.id = :id")
+                .setParameter("price", price)
+                .setParameter("id", orderId)
+                .executeUpdate();
+
+        entityManager.flush();
+    }
+
+    private void thinkTime(long commitDelay) {
+        if (commitDelay > 0) {
             try {
                 Thread.sleep(commitDelay * 1000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            logger.info("Proceeding with write");
         }
-
-        if (!order.getStatus().equals(status)) {
-            logger.info("Set status to {}", status);
-            order.setStatus(status);
-        }
-
-        if (BigDecimal.ZERO.compareTo(increment) != 0) {
-            logger.info("Increment total with {}", increment);
-            order.incrementTotalPrice(increment);
-        }
-
-        entityManager.merge(order);
-        entityManager.flush();
-
-        return order;
     }
 
     public <T extends AbstractOrder> void deleteOne(Class<T> orderType, Long orderId) {

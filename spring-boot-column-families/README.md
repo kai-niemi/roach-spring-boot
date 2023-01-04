@@ -56,3 +56,65 @@ The REST API index is available at (explorable):
 - Postman HTTP client - https://www.postman.com/downloads/
 - cURL - https://github.com/curl/curl
 - jq - https://github.com/stedolan/jq
+
+# Testing Procedure
+
+In this sequence of operations we are updating the same record concurrently on different columns. 
+With a single column family, it will fail with a 40001 error and with multiple column families, 
+it will succeed.
+
+## Single Column Family Test
+
+Get form to create new order:
+```shell
+curl "http://localhost:8090/order/v1/template" > o1.json
+```
+
+Submit order form:
+
+```shell
+curl "http://localhost:8090/order/v1/" -H "Content-Type:application/json" -X POST -d "@o1.json"
+```
+
+Take note of generated `id` value and update status which will delay the commit by 5 sec
+to allow for the other update to come in between:
+
+```shell
+curl "http://localhost:8090/order/v1/1/status?delay=5" -i -X PUT
+```
+
+Within 5 sec, update price on same order which will cause a serialization conflict:
+
+```shell
+curl "http://localhost:8090/order/v1/1/price?price=5&delay=0" -i -X PUT
+```
+
+This request will fail.
+
+## Multiple Column Families Test
+
+Get form to create new order:
+```shell
+curl "http://localhost:8090/order/v2/template" > o1.json
+```
+
+Submit order form:
+
+```shell
+curl "http://localhost:8090/order/v2/" -H "Content-Type:application/json" -X POST -d "@o1.json"
+```
+
+Take note of generated `id` value and update status which will delay the commit by 5 sec
+to allow for the other update to come in between:
+
+```shell
+curl "http://localhost:8090/order/v2/1/status?delay=5" -i -X PUT
+```
+
+Within 5 sec, update price on same order which will cause a serialization conflict:
+
+```shell
+curl "http://localhost:8090/order/v2/1/price?price=5&delay=0" -i -X PUT
+```
+
+This request will fail.

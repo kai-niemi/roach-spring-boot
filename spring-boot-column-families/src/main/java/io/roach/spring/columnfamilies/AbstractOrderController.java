@@ -101,6 +101,7 @@ public abstract class AbstractOrderController<T extends AbstractOrder> {
         template.setDeliveryAddress(address2);
 
         template.setTotalPrice(BigDecimal.ZERO);
+        template.setId(1L);
 
         return ResponseEntity.ok(EntityModel.of(template)
                 .add(linkTo(methodOn(getClass()).submitOrder(null))
@@ -109,7 +110,7 @@ public abstract class AbstractOrderController<T extends AbstractOrder> {
 
     @PostMapping
     public ResponseEntity<EntityModel<T>> submitOrder(@RequestBody T order) {
-        order.setStatus(ShipmentStatus.PLACED);
+        order.setOrderStatus(OrderStatus.PLACED);
         order.setDatePlaced(LocalDate.now());
 
         order = orderService.placeOrder(order);
@@ -121,19 +122,34 @@ public abstract class AbstractOrderController<T extends AbstractOrder> {
     private EntityModel<T> toModel(T order) {
         return EntityModel.of(order)
                 .add(linkTo(methodOn(getClass()).getOrderById(order.getId())).withSelfRel()
-                                .andAffordance(afford(methodOn(getClass()).updateOrderStatus(order.getId(), order.getStatus(),
-                                        BigDecimal.ZERO, 5)))
+                                .andAffordance(
+                                        afford(methodOn(getClass()).updateOrderStatus(order.getId(), 5)))
+                                .withRel("status")
+                                .andAffordance(afford(methodOn(getClass()).updateOrderPrice(order.getId(), BigDecimal.ZERO, 5)))
+                                .withRel("price")
                                 .andAffordance(afford(methodOn(getClass()).deleteOrderById(order.getId()))),
                         linkTo(methodOn(getClass()).findOrders())
                                 .withRel("orders"));
     }
 
-    @PutMapping("/{id}")
-    public T updateOrderStatus(@PathVariable("id") Long id,
-                               @RequestParam("status") ShipmentStatus shipmentStatus,
-                               @RequestParam(value = "increment", defaultValue = "0") BigDecimal increment,
-                               @RequestParam(value = "delay", defaultValue = "0") long commitDelay) {
+    @PutMapping("/{id}/status")
+    public ResponseEntity<EntityModel<T>> updateOrderStatus(@PathVariable("id") Long id,
+                                                            @RequestParam(value = "delay", defaultValue = "0") long commitDelay) {
         Assert.isTrue(!TransactionSynchronizationManager.isActualTransactionActive(), "Expected no transaction!");
-        return orderService.updateOrderDetails(orderClass, id, shipmentStatus, increment, commitDelay);
+
+        orderService.updateOrderStatus(orderClass, id, commitDelay);
+
+        return getOrderById(id);
+    }
+
+    @PutMapping("/{id}/price")
+    public ResponseEntity<EntityModel<T>> updateOrderPrice(@PathVariable("id") Long id,
+                                                           @RequestParam(value = "price", defaultValue = "0") BigDecimal price,
+                                                           @RequestParam(value = "delay", defaultValue = "0") long commitDelay) {
+        Assert.isTrue(!TransactionSynchronizationManager.isActualTransactionActive(), "Expected no transaction!");
+
+        orderService.updateOrderPrice(orderClass, id, price, commitDelay);
+
+        return getOrderById(id);
     }
 }

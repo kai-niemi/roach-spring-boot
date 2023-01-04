@@ -48,24 +48,8 @@ create table purchase_order2
 
     primary key (id),
 
-    family f1 (id),
-    family f2 (bill_address1),
-    family f3 (bill_address2),
-    family f4 (bill_city),
-    family f5 (bill_country),
-    family f6 (bill_postcode),
-    family f7 (bill_to_first_name),
-    family f8 (bill_to_last_name),
-    family f9 (date_placed),
-    family f10 (deliv_to_first_name),
-    family f11 (deliv_to_last_name),
-    family f12 (deliv_address1),
-    family f13 (deliv_address2),
-    family f14 (deliv_city),
-    family f15 (deliv_country),
-    family f16 (deliv_postcode),
-    family f17 (total_price),
-    family f18 (order_status)
+    FAMILY f1 (id, bill_address1, bill_address2, bill_city, bill_country, bill_postcode, bill_to_first_name, bill_to_last_name, date_placed, deliv_to_first_name, deliv_to_last_name, deliv_address1, deliv_address2, deliv_city, deliv_country, deliv_postcode, order_status),
+    family f2 (total_price)
 );
 
 show create table purchase_order1;

@@ -29,16 +29,15 @@ import net.ttddyy.dsproxy.listener.logging.SLF4JLogLevel;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 
 @Configuration
+@SpringBootApplication
 @EnableHypermediaSupport(type = {
         EnableHypermediaSupport.HypermediaType.HAL_FORMS,
         EnableHypermediaSupport.HypermediaType.HAL})
 @EnableSpringDataWebSupport
-@EnableConfigurationProperties
 @EnableJpaRepositories(basePackages = {"io.roach.spring"})
 @EnableTransactionManagement(proxyTargetClass = true,
         order = Ordered.LOWEST_PRECEDENCE - 1)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-@SpringBootApplication
 public class ColumnFamilyApplication {
     public static void main(String[] args) {
         new SpringApplicationBuilder(ColumnFamilyApplication.class)
