@@ -42,7 +42,6 @@ Alternatively, start the server with custom parameters:
 
     target/spring-boot-column-family.jar \
     --server.port=8090 \
-    --spring.profiles.active=verbose \
     --spring.datasource.url=jdbc:postgresql://localhost:26257/spring_boot?sslmode=disable \
     "$@"
 
@@ -66,6 +65,7 @@ it will succeed.
 ## Single Column Family Test
 
 Get form to create new order:
+
 ```shell
 curl "http://localhost:8090/order/v1/template" > o1.json
 ```
@@ -117,4 +117,4 @@ Within 5 sec, update price on same order which will cause a serialization confli
 curl "http://localhost:8090/order/v2/1/price?price=5&delay=0" -i -X PUT
 ```
 
-This request will fail.
+

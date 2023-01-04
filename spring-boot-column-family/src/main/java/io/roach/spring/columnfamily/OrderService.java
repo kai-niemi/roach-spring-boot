@@ -109,13 +109,13 @@ public class OrderService {
             logger.info("Proceeding with commit");
         }
 
-        entityManager
-                .createQuery("update " + orderType.getSimpleName()
-                        + " o set o.totalPrice = o.totalPrice + :price"
-                        + " where o.id = :id")
-                .setParameter("price", price)
-                .setParameter("id", orderId)
-                .executeUpdate();
+entityManager
+        .createQuery("update " + orderType.getSimpleName()
+                + " o set o.totalPrice = o.totalPrice + :price"
+                + " where o.id = :id")
+        .setParameter("price", price)
+        .setParameter("id", orderId)
+        .executeUpdate();
 
         entityManager.flush();
     }
