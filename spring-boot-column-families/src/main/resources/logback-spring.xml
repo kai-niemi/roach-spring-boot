@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <logger name="org.springframework" level="INFO"/>
+
+    <logger name="org.hibernate.internal" level="DEBUG"/>
+    <logger name="org.springframework.transaction.interceptor" level="TRACE"/>
+    <logger name="org.springframework.orm.jpa" level="TRACE"/>
+
+    <logger name="io.roach" level="DEBUG"/>
+    <logger name="io.roach.SQL_TRACE" level="DEBUG"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
+

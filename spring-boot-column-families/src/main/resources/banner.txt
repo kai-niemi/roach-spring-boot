@@ -1,0 +1,5 @@
+──▄──▄────▄▀
+───▀▄─█─▄▀▄▄▄   ${AnsiColor.BRIGHT_YELLOW}C O C K R O A C H D B${AnsiColor.DEFAULT}
+▄██▄████▄██▄▀█▄ Column Families - Active spring profiles: ${spring.profiles.active}
+─▀▀─█▀█▀▄▀███▀  ${AnsiColor.BRIGHT_GREEN}${application.formatted-version}${AnsiColor.DEFAULT}
+──▄▄▀─█──▀▄▄    Powered by Spring Boot${spring-boot.formatted-version}
