@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.springframework.transaction" level="WARN"/>
+    <logger name="org.springframework.transaction.support" level="WARN"/>
+    <logger name="org.springframework.transaction.interceptor" level="WARN"/>
+    <logger name="org.springframework.web" level="WARN"/>
+    <logger name="org.springframework.jdbc.core" level="INFO"/>
+    <logger name="org.springframework.jdbc.core.JdbcTemplate" level="INFO"/>
+
+    <logger name="org.flywaydb" level="DEBUG"/>
+
+    <springProfile name="verbose">
+        <logger name="io.roach.spring.catalog" level="TRACE"/>
+        <logger name="io.roach.SQL_TRACE" level="TRACE"/>
+    </springProfile>
+
+    <springProfile name="!verbose">
+        <logger name="io.roach.spring.catalog" level="DEBUG"/>
+        <logger name="io.roach.SQL_TRACE" level="DEBUG"/>
+    </springProfile>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
+

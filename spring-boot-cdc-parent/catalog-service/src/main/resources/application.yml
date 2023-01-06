@@ -1,0 +1,87 @@
+##################################
+# Spring boot properties
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+##################################
+spring:
+  application:
+    name: catalog-service
+  profiles:
+    active: dev,verbose
+  output:
+    ansi:
+      enabled: ALWAYS
+  jackson:
+    serialization:
+      indent_output: true
+      write_dates_as_timestamps: false
+    deserialization:
+      fail_on_unknown_properties: false
+      fail_on_ignored_properties: false
+    default-property-inclusion: non_null
+    locale: en_US
+  mvc:
+    throw-exception-if-no-handler-found: true
+  jpa:
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: io.roach.spring.catalog.util.CockroachDBDialect
+  flyway:
+    enabled: true
+    clean-on-validation-error: true
+    baseline-on-migrate: false
+    locations: classpath:db/migration
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: "jdbc:postgresql://localhost:26257/spring_boot_catalog?sslmode=disable"
+    username: root
+    password:
+    hikari:
+      pool-name: catalog-service
+      maximum-pool-size: 40
+      minimum-idle: 20
+
+#############################
+logging:
+  pattern:
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr([%logger{39}]){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+    file: "%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:%5p} [%t] %logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+  file:
+    name: catalog-service.log
+#############################
+info:
+  build:
+    artifact: io.roach.spring.catalog
+    name: Product Catalog
+    description: Product Catalog
+    version: 1.0.0
+    app-label: Product Catalog
+#############################
+# https://docs.spring.io/spring-boot/docs/2.2.0.RELEASE/actuator-api//html/
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: env,health,metrics,flyway,prometheus
+      base-path: /catalog-service/actuator
+  endpoint:
+    health:
+      show-details: always
+  health:
+    defaults:
+      enabled: true
+    db:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+#############################
+# HTTP API server (ServerProperties)
+server:
+  port: 8090
+  error:
+    whitelabel:
+      enabled: false
+    include-stacktrace: always

@@ -1,0 +1,61 @@
+{
+    "payload": [
+        {
+            "__crdb__": {
+                "topic": "product"
+            },
+            "event_payload": {
+                "inventory": 99,
+                "name": "Mfp1G-ESgbf093Mni2bmig",
+                "price": "23.50 USD",
+                "sku": "p-94"
+            },
+            "event_prev": {
+                "created_at": null,
+                "created_by": null,
+                "currency": null,
+                "description": null,
+                "id": "047867dc-4ab3-4578-9cc9-1635af06740d",
+                "inventory": null,
+                "last_modified_at": null,
+                "last_modified_by": null,
+                "name": null,
+                "price": null,
+                "sku": null
+            },
+            "event_table": "product",
+            "event_timestamp": 1673000940491188390,
+            "event_type": "create",
+            "event_version": "v1"
+        },
+        {
+            "__crdb__": {
+                "topic": "product"
+            },
+            "event_payload": {
+                "inventory": 73,
+                "name": "Vlg3SgO1veYQeasnrEV6cQ",
+                "price": "20.21 USD",
+                "sku": "p-103"
+            },
+            "event_prev": {
+                "created_at": null,
+                "created_by": null,
+                "currency": null,
+                "description": null,
+                "id": "0ae63e72-1b7b-4163-89f5-9f53ce554ca2",
+                "inventory": null,
+                "last_modified_at": null,
+                "last_modified_by": null,
+                "name": null,
+                "price": null,
+                "sku": null
+            },
+            "event_table": "product",
+            "event_timestamp": 1673000940491188390,
+            "event_type": "create",
+            "event_version": "v1"
+        }
+    ],
+    "length": 2
+}

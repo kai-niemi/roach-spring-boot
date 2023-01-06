@@ -1,0 +1,5 @@
+──▄──▄────▄▀
+───▀▄─█─▄▀▄▄▄                    ROACH-SPRING
+▄██▄████▄██▄▀█▄  P R O D U C T  C A T A L O G
+─▀▀─█▀█▀▄▀███▀   ${application.formatted-version} powered by Spring Boot ${spring-boot.formatted-version}
+──▄▄▀─█──▀▄▄
