@@ -3,7 +3,7 @@
 
 CANCEL JOBS (SELECT job_id FROM [SHOW JOBS] where job_type = 'CHANGEFEED' and status = 'running');
 
-CREATE CHANGEFEED INTO 'webhook-https://192.168.1.113:8443/order-service/cdc?insecure_tls_skip_verify=true'
+CREATE CHANGEFEED INTO 'webhook-https://localhost:8443/order-service/cdc?insecure_tls_skip_verify=true'
 WITH schema_change_policy='stop', key_in_value, updated, resolved='15s', webhook_sink_config='{"Flush": {"Messages": 10, "Frequency": "5s"}, "Retry": {"Max": "inf"}}'
 AS SELECT
     cdc_updated_timestamp()::int AS event_timestamp,

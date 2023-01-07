@@ -6,7 +6,7 @@ spring:
   application:
     name: catalog-service
   profiles:
-    active: dev,verbose
+    active: verbose
   output:
     ansi:
       enabled: ALWAYS
