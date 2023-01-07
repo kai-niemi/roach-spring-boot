@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.roach.spring.order.product.ChangeEventListener;
-import io.roach.spring.order.product.ProductChangeEvent;
+import io.roach.spring.order.product.ProductEnvelope;
 
 @RestController
 @RequestMapping(value = "/order-service/cdc")
@@ -47,12 +47,14 @@ public class ChangeFeedController {
             logger.debug("onChangeFeedEvent ({}) body:\n{}", counter.incrementAndGet(), prettyJson);
 
             // We could use the 'event_table' field to map against change event types, here we only have one type
-            ProductChangeEvent event = objectMapper.readerFor(ProductChangeEvent.class).readValue(body);
-            if (event.getResolvedTimestamp().isPresent()) {
-                logger.info("Received resolved timestamp: {}", event.getResolvedTimestamp().get());
-            } else {
-                event.getEnvelope().forEach(e -> domainEventListener.onProductChangeEvent(e));
+            ProductEnvelope envelope = objectMapper.readerFor(ProductEnvelope.class).readValue(body);
+            AbstractEnvelope.Metadata metadata = envelope.getMetadata();
+            if (metadata != null) {
+                metadata.getResolvedTimestamp().ifPresent(logicalTimestamp -> {
+                    logger.debug("Resolved timestamp: {}", logicalTimestamp);
+                });
             }
+            envelope.getPayloads().forEach(e -> domainEventListener.onProductChangeEvent(e));
         } catch (JsonProcessingException e) {
             logger.error("", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

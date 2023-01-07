@@ -36,7 +36,6 @@ public class Product extends AbstractEntity<UUID> {
     @Column(length = 256)
     private String description;
 
-    @NaturalId
     @Column(length = 128, nullable = false, unique = true)
     private String sku;
 

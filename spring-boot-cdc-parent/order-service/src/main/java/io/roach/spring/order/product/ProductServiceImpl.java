@@ -1,8 +1,5 @@
 package io.roach.spring.order.product;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -15,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.roach.spring.order.changefeed.Envelope;
+import io.roach.spring.order.changefeed.Payload;
 import io.roach.spring.order.util.Money;
 
 @Service
@@ -42,41 +39,44 @@ public class ProductServiceImpl implements ProductService, ChangeEventListener {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void onProductChangeEvent(Envelope<ProductPayload, UUID> envelope) {
-        ProductPayload afterPayload = envelope.getAfterPayload();
-        if (afterPayload == null) {
-            logger.warn("Empty payload: {}", envelope);
+    public void onProductChangeEvent(Payload<ProductEvent, UUID> payload) {
+        ProductEvent beforeEvent = payload.getBefore();
+        ProductEvent afterEvent = payload.getAfter();
+
+        // Deletes are a bit special
+        if (beforeEvent == null && afterEvent == null) {
+            Payload.Metadata metadata = payload.getMetadata();
+            metadata.getKey().forEach(key -> {
+                UUID id = UUID.fromString(key);
+                logger.debug("Delete product with ID [{}]", id);
+                productRepository.deleteById(id);
+            });
             return;
         }
 
-        switch (envelope.getOperation()) {
+        switch (payload.getOperation()) {
             case insert:
             case update:
-                Product proxy = productRepository.findById(afterPayload.getId()).orElseGet(Product::new);
+                Product proxy = productRepository.findById(afterEvent.getId()).orElseGet(Product::new);
                 if (proxy.isNew()) {
-                    logger.debug("Create product with ID [{}]: {}", afterPayload.getId(), proxy);
-                    proxy.setId(afterPayload.getId());
+                    logger.debug("Create product with ID [{}]: {}", afterEvent.getId(), proxy);
+                    proxy.setId(afterEvent.getId());
                 } else {
-                    logger.debug("Update product with ID [{}]: {}", afterPayload.getId(), proxy);
+                    logger.debug("Update product with ID [{}]: {}", afterEvent.getId(), proxy);
                 }
 
-                Money m = Money.of(afterPayload.getPrice());
+                Money m = Money.of(afterEvent.getPrice());
                 proxy.setPrice(m.getAmount());
                 proxy.setCurrency(m.getCurrency().getCurrencyCode());
-                proxy.setSku(afterPayload.getSku());
-                proxy.setName(afterPayload.getName());
-                proxy.setDescription(afterPayload.getDescription());
-                proxy.setInventory(afterPayload.getInventory());
+                proxy.setSku(afterEvent.getSku());
+                proxy.setName(afterEvent.getName());
+                proxy.setDescription(afterEvent.getDescription());
+                proxy.setInventory(afterEvent.getInventory());
 
                 productRepository.save(proxy);
                 break;
-            case delete: {
-                logger.debug("Delete product with ID [{}]", afterPayload.getId());
-                productRepository.deleteById(afterPayload.getId());
-                break;
-            }
             default:
-                throw new IllegalStateException("Unknown operation: " + envelope.getOperation());
+                throw new IllegalStateException("Unknown operation: " + payload.getOperation());
         }
     }
 }
