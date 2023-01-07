@@ -25,7 +25,6 @@ AS SELECT
     ) AS event_after
 FROM product;
 
--- pending:
 -- row_to_json(product.*)
 
 SELECT job_id,description,num_runs,execution_errors FROM [SHOW JOBS] where job_type = 'CHANGEFEED' and status = 'running';

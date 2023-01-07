@@ -11,6 +11,6 @@ insert into product
 )
 values ('new', 'desc', 10.50,'SEK',gen_random_uuid()::string,300,'user:x','user:x') returning id;
 
-update product set name='update' where id='f5104052-2ee2-49bb-a436-e5eab15771c7';
+update product set name='hello!' where id='faf8e74d-f1af-4b48-84a2-57c7f3910391';
 
-delete from product where id='f5104052-2ee2-49bb-a436-e5eab15771c7';
+delete from product where id='faf8e74d-f1af-4b48-84a2-57c7f3910391';

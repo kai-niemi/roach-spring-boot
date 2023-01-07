@@ -12,10 +12,6 @@ create table product
     currency         varchar(3)     not null,
     sku              varchar(128)   not null,
     inventory        int            not null,
-    created_by       varchar(24),
-    created_at       timestamptz    not null,
-    last_modified_by varchar(24),
-    last_modified_at timestamptz,
 
     primary key (id)
 );

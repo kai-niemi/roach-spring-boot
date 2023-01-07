@@ -1,6 +1,5 @@
 package io.roach.spring.order.changefeed;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -25,7 +24,7 @@ import io.roach.spring.order.product.ProductChangeEvent;
 @RestController
 @RequestMapping(value = "/order-service/cdc")
 public class ChangeFeedController {
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final AtomicInteger counter = new AtomicInteger(0);
 
@@ -42,27 +41,19 @@ public class ChangeFeedController {
     @PostMapping(consumes = {MediaType.ALL_VALUE})
     public ResponseEntity<?> onChangeFeedEvent(@RequestBody String body) {
         try {
-            String prettyJson = prettyObjectMapper.writerWithDefaultPrettyPrinter()
+            String prettyJson = prettyObjectMapper
+                    .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(prettyObjectMapper.readTree(body));
-            logger.debug("onChangeFeedEvent event #[{}] raw body:\n{}", counter.incrementAndGet(), prettyJson);
-        } catch (JsonProcessingException e) {
-            logger.error("", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.toString());
-        }
+            logger.debug("onChangeFeedEvent ({}) body:\n{}", counter.incrementAndGet(), prettyJson);
 
-        // We could use the 'event_table' field to map against change event types, here we only have one type
-        try {
-            ProductChangeEvent event = objectMapper.readerFor(ProductChangeEvent.class)
-                    .readValue(body);
+            // We could use the 'event_table' field to map against change event types, here we only have one type
+            ProductChangeEvent event = objectMapper.readerFor(ProductChangeEvent.class).readValue(body);
             if (event.getResolvedTimestamp().isPresent()) {
                 logger.info("Received resolved timestamp: {}", event.getResolvedTimestamp().get());
             } else {
-                event.getEnvelope().forEach(e -> {
-                    domainEventListener.onProductChangeEvent(e);
-                });
+                event.getEnvelope().forEach(e -> domainEventListener.onProductChangeEvent(e));
             }
-        } catch (IOException e) {
+        } catch (JsonProcessingException e) {
             logger.error("", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.toString());
@@ -73,6 +64,6 @@ public class ChangeFeedController {
 
     @GetMapping
     public ResponseEntity<?> getStatus() {
-        return ResponseEntity.ok().body("CDC webhook endpoint online - Use POST");
+        return ResponseEntity.ok().body("CDC webhook endpoint only supports POST");
     }
 }

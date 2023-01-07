@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -66,7 +67,7 @@ public class JpaConfiguration {
                 .type(HikariDataSource.class)
                 .build();
         ds.setAutoCommit(false);
-//        ds.addDataSourceProperty(PGProperty.REWRITE_BATCHED_INSERTS.getName(), "true");
+        ds.addDataSourceProperty(PGProperty.REWRITE_BATCHED_INSERTS.getName(), "true");
         ds.addDataSourceProperty("application_name", "Roach Order Service");
         return ds;
     }
@@ -94,11 +95,16 @@ public class JpaConfiguration {
         return emf;
     }
 
+    @Bean
+    public JdbcTemplate jdbcTemplate() {
+        return new JdbcTemplate(dataSource());
+    }
+
     private Properties jpaVendorProperties() {
         return new Properties() {
             {
-//                setProperty(Environment.STATEMENT_BATCH_SIZE, "128");
-//                setProperty(Environment.BATCH_VERSIONED_DATA, "true");
+                setProperty(Environment.STATEMENT_BATCH_SIZE, "128");
+                setProperty(Environment.BATCH_VERSIONED_DATA, "true");
                 setProperty(Environment.ORDER_INSERTS, "true");
                 setProperty(Environment.ORDER_UPDATES, "true");
 
@@ -122,4 +128,6 @@ public class JpaConfiguration {
         vendorAdapter.setDatabase(Database.POSTGRESQL);
         return vendorAdapter;
     }
+
+
 }

@@ -1,7 +1,6 @@
 package io.roach.spring.order.product;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -49,18 +48,6 @@ public class Product extends AbstractEntity<UUID> {
 
     @Column(nullable = false)
     private int inventory;
-
-    @Column(name = "created_by")
-    private String createdBy;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "last_modified_by")
-    private String lastModifiedBy;
-
-    @Column(name = "last_modified_at")
-    private LocalDateTime lastModifiedAt;
 
     @Override
     @JsonIgnore
@@ -120,42 +107,6 @@ public class Product extends AbstractEntity<UUID> {
         this.inventory = inventory;
     }
 
-    public void incInventory(int delta) {
-        this.inventory += delta;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public LocalDateTime getLastModifiedAt() {
-        return lastModifiedAt;
-    }
-
-    public void setLastModifiedAt(LocalDateTime lastModifiedAt) {
-        this.lastModifiedAt = lastModifiedAt;
-    }
-
     @Override
     public String toString() {
         return "Product{" +
@@ -166,10 +117,6 @@ public class Product extends AbstractEntity<UUID> {
                 ", price=" + price +
                 ", currency='" + currency + '\'' +
                 ", inventory=" + inventory +
-                ", createdBy='" + createdBy + '\'' +
-                ", createdAt=" + createdAt +
-                ", lastModifiedBy='" + lastModifiedBy + '\'' +
-                ", lastModifiedAt=" + lastModifiedAt +
                 "} " + super.toString();
     }
 }

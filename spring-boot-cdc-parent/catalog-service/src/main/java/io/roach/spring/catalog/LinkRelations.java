@@ -14,5 +14,7 @@ public abstract class LinkRelations {
 
     public static final String PRODUCTS_REL = "products";
 
-    public static final String SCHEDULER_REL = "scheduler";
+    public static final String SCHEDULING_REL = "scheduling";
+
+    public static final String TOGGLE_REL = "toggle";
 }

@@ -14,11 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.roach.spring.catalog.LinkRelations;
 import io.roach.spring.catalog.product.Product;
 import io.roach.spring.catalog.product.ProductService;
 import io.roach.spring.catalog.util.RandomUtils;
@@ -29,12 +31,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = "/catalog-service/scheduler")
-public class SchedulerController {
+public class SchedulingController {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
 
-    private static boolean enablePeriodicUpdates;
+    private static boolean enableInserts;
+
+    private static boolean enableUpdates;
+
+    private static boolean enableDeletes;
 
     @Autowired
     private ProductService productService;
@@ -56,35 +62,60 @@ public class SchedulerController {
     }
 
     @GetMapping
-    public ResponseEntity<SchedulerModel> getScheduler() {
+    public ResponseEntity<SchedulingModel> getShedulingStatus() {
         return ResponseEntity.ok().body(toModel());
     }
 
-    @GetMapping("/toggle")
-    @PostMapping("/toggle")
-    public ResponseEntity<SchedulerModel> toggleScheduler() {
-        SchedulerController.enablePeriodicUpdates = !SchedulerController.enablePeriodicUpdates;
+    @GetMapping("/toggle-insert") // Anti-pattern!
+    @PostMapping("/toggle-insert")
+    public ResponseEntity<SchedulingModel> toggleInserts() {
+        SchedulingController.enableInserts = !SchedulingController.enableInserts;
         return ResponseEntity.ok().body(toModel());
     }
 
-    private SchedulerModel toModel() {
-        SchedulerModel model = new SchedulerModel();
-        model.setStatus(SchedulerController.enablePeriodicUpdates ? "running" : "paused");
+    @GetMapping("/toggle-update") // Anti-pattern!
+    @PostMapping("/toggle-update")
+    public ResponseEntity<SchedulingModel> toggleUpdates() {
+        SchedulingController.enableUpdates = !SchedulingController.enableUpdates;
+        return ResponseEntity.ok().body(toModel());
+    }
+
+    @GetMapping("/toggle-delete") // Anti-pattern!
+    @PostMapping("/toggle-delete")
+    public ResponseEntity<SchedulingModel> toggleDeletes() {
+        SchedulingController.enableDeletes = !SchedulingController.enableDeletes;
+        return ResponseEntity.ok().body(toModel());
+    }
+
+    private SchedulingModel toModel() {
+        SchedulingModel model = new SchedulingModel();
+        model.setInsertsEnabled(SchedulingController.enableInserts);
+        model.setUpdatesEnabled(SchedulingController.enableUpdates);
+        model.setDeletesEnabled(SchedulingController.enableDeletes);
         model.setProductsCreated((int) productsCreated.count());
         model.setProductsUpdated((int) productsUpdated.count());
         model.setProductsDeleted((int) productsDeleted.count());
         model.add(linkTo(methodOn(getClass())
-                .toggleScheduler())
-                .withSelfRel()
-                .andAffordance(afford(methodOn(getClass()).toggleScheduler()))
-                .withTitle("Toggle periodic product catalog updates")
-                .withRel("toggle-updates"));
+                .toggleInserts())
+                .withRel(LinkRelations.TOGGLE_REL)
+                .andAffordance(afford(methodOn(getClass()).toggleInserts()))
+                .withTitle("Toggle periodic product INSERTs"));
+        model.add(linkTo(methodOn(getClass())
+                .toggleUpdates())
+                .withRel(LinkRelations.TOGGLE_REL)
+                .andAffordance(afford(methodOn(getClass()).toggleUpdates()))
+                .withTitle("Toggle periodic product UPDATEs"));
+        model.add(linkTo(methodOn(getClass())
+                .toggleDeletes())
+                .withRel(LinkRelations.TOGGLE_REL)
+                .andAffordance(afford(methodOn(getClass()).toggleDeletes()))
+                .withTitle("Toggle periodic product DELETEs"));
         return model;
     }
 
     @Scheduled(cron = "*/15 * * * * ?")
     public void createProducts() {
-        if (!enablePeriodicUpdates) {
+        if (!enableInserts) {
             return;
         }
 
@@ -105,7 +136,7 @@ public class SchedulerController {
 
     @Scheduled(cron = "0/15 * * * * ?")
     public void updateProducts() {
-        if (!enablePeriodicUpdates) {
+        if (!enableInserts) {
             return;
         }
 
@@ -131,7 +162,7 @@ public class SchedulerController {
 
     @Scheduled(cron = "2 * * * * ?")
     public void deleteProducts() {
-        if (!enablePeriodicUpdates) {
+        if (!enableInserts) {
             return;
         }
         Page<Product> products = productService.findProductsPage(PageRequest.ofSize(32));

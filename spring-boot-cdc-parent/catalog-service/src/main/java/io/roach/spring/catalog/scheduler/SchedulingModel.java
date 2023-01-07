@@ -2,8 +2,12 @@ package io.roach.spring.catalog.scheduler;
 
 import org.springframework.hateoas.RepresentationModel;
 
-public class SchedulerModel extends RepresentationModel<SchedulerModel> {
-    private String status;
+public class SchedulingModel extends RepresentationModel<SchedulingModel> {
+    private boolean insertsEnabled;
+
+    private boolean updatesEnabled;
+
+    private boolean deletesEnabled;
 
     private int productsCreated;
 
@@ -11,12 +15,28 @@ public class SchedulerModel extends RepresentationModel<SchedulerModel> {
 
     private int productsDeleted;
 
-    public String getStatus() {
-        return status;
+    public boolean isInsertsEnabled() {
+        return insertsEnabled;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setInsertsEnabled(boolean insertsEnabled) {
+        this.insertsEnabled = insertsEnabled;
+    }
+
+    public boolean isUpdatesEnabled() {
+        return updatesEnabled;
+    }
+
+    public void setUpdatesEnabled(boolean updatesEnabled) {
+        this.updatesEnabled = updatesEnabled;
+    }
+
+    public boolean isDeletesEnabled() {
+        return deletesEnabled;
+    }
+
+    public void setDeletesEnabled(boolean deletesEnabled) {
+        this.deletesEnabled = deletesEnabled;
     }
 
     public int getProductsCreated() {

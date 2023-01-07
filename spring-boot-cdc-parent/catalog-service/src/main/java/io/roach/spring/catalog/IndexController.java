@@ -7,16 +7,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import io.roach.spring.catalog.product.ProductController;
-import io.roach.spring.catalog.scheduler.SchedulerController;
+import io.roach.spring.catalog.scheduler.SchedulingController;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/catalog-service")
 public class IndexController {
     @GetMapping("/")
+    public RedirectView getHome() {
+        return new RedirectView("catalog-service");
+    }
+
+    @GetMapping("/catalog-service")
     public ResponseEntity<RepresentationModel<?>> getApiIndex() {
         RepresentationModel<?> index = new RepresentationModel<>();
 
@@ -27,10 +32,10 @@ public class IndexController {
                 .withTitle("Product collection resource"));
 
         index.add(WebMvcLinkBuilder
-                .linkTo(methodOn(SchedulerController.class)
-                        .getScheduler())
-                .withRel(LinkRelations.SCHEDULER_REL)
-                .withTitle("Product update scheduler resource"));
+                .linkTo(methodOn(SchedulingController.class)
+                        .getShedulingStatus())
+                .withRel(LinkRelations.SCHEDULING_REL)
+                .withTitle("Scheduling resource"));
 
         return ResponseEntity.ok(index);
     }
