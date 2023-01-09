@@ -19,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AccountJournalTest extends AbstractIntegrationTest {
     @Autowired
-    private AccountJournalRepository repository;
+    private AccountJournalRepository accountJournalRepository;
 
     @Test
-//    @Transactional(propagation = Propagation.REQUIRES_NEW)
-//    @Commit
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Commit
     @Order(1)
     public void whenCreatingAccountEventInJournal_thenComputedKeyIsReturnedFromPayload() {
         Account account1 = Account.builder()
@@ -42,7 +42,7 @@ public class AccountJournalTest extends AbstractIntegrationTest {
         AccountJournal journal1 = new AccountJournal();
         journal1.setTag("asset");
         journal1.setEvent(account1);
-        journal1 = repository.save(journal1);
+        journal1 = accountJournalRepository.save(journal1);
 
         assertNotNull(journal1);
         assertEquals(account1.getId().toString(), journal1.getId());
@@ -50,7 +50,7 @@ public class AccountJournalTest extends AbstractIntegrationTest {
         AccountJournal journal2 = new AccountJournal();
         journal2.setTag("expense");
         journal2.setEvent(account2);
-        journal2 = repository.save(journal2);
+        journal2 = accountJournalRepository.save(journal2);
 
         assertNotNull(journal2);
         assertEquals(account2.getId().toString(), journal2.getId());
@@ -60,8 +60,8 @@ public class AccountJournalTest extends AbstractIntegrationTest {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Commit
     @Order(2)
-    public void whenFindBalanceBetween_thenAtLeastOneJournalIsReturned() {
-        List<AccountJournal> result = repository.findWithBalanceBetween(
+    public void whenFindingAccountsWithBalanceRange_thenAtLeastOneIsReturned() {
+        List<AccountJournal> result = accountJournalRepository.findAccountsWithBalanceBetween(
                 BigDecimal.valueOf(250.00), BigDecimal.valueOf(500.00));
         assertTrue(result.size() > 0);
     }

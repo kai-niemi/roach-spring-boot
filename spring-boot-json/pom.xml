@@ -43,6 +43,10 @@
             <artifactId>datasource-proxy</artifactId>
             <version>1.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
 
         <!-- ======================================================== -->
         <!-- Test -->

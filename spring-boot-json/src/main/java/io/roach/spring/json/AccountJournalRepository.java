@@ -16,6 +16,6 @@ public interface AccountJournalRepository extends JpaRepository<AccountJournal, 
     @Query(value = "SELECT * FROM journal WHERE event_type='ACCOUNT'"
             + " AND (payload ->> 'balance')::::decimal BETWEEN :lowerBound AND :upperBound",
             nativeQuery = true)
-    List<AccountJournal> findWithBalanceBetween(
+    List<AccountJournal> findAccountsWithBalanceBetween(
             @Param("lowerBound") BigDecimal lowerBound, @Param("upperBound") BigDecimal upperBound);
 }

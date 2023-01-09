@@ -1,5 +1,5 @@
 ^__^
 (oo)\_______
-(__)\       )\/\   CockroachDB on Spring  ${application.formatted-version} - JSONB and inverted indexes
+(__)\       )\/\   CockroachDB on Spring  ${application.formatted-version} - JSONB with computed and inverted indexes
    ||----w |       powered by Spring Boot ${spring-boot.formatted-version}
    ||     ||

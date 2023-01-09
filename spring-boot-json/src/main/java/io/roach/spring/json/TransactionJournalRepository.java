@@ -19,8 +19,8 @@ public interface TransactionJournalRepository extends JpaRepository<TransactionJ
     @Query(value = "SELECT * FROM journal WHERE event_type='TRANSACTION'"
             + " AND payload ->> 'transferDate' BETWEEN :startDate AND :endDate",
             nativeQuery = true)
-    List<TransactionJournal> findBetweenTransferDates(@Param("startDate") String startDate,
-                                                      @Param("endDate") String endDate);
+    List<TransactionJournal> findTransactionsInDateRange(@Param("startDate") String startDate,
+                                                         @Param("endDate") String endDate);
 
     @Query(value =
             "WITH x AS(SELECT payload from journal where event_type='TRANSACTION' AND tag=:tag),"

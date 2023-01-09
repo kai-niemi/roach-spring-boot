@@ -4,24 +4,28 @@
 ########################
 
 spring:
+  profiles:
+    active: verbose
   output:
     ansi:
       enabled: ALWAYS
 
   datasource:
-    url: jdbc:postgresql://localhost:26257/roach_spring?sslmode=disable
+    url: jdbc:postgresql://localhost:26257/spring_boot?sslmode=disable
     driver-class-name: org.postgresql.Driver
     username: root
     password:
     hikari:
-      connection-test-query: SELECT 1
-      auto-commit: true
+      auto-commit: false
+      maximum-pool-size: 5
+      minimum-idle: 5
+      initialization-fail-timeout: -1
 
   flyway:
     enabled: true
     clean-on-validation-error: true
-    baseline-on-migrate: false
-    locations: classpath:db
+    baseline-on-migrate: true
+    locations: classpath:db/
 
   jpa:
     open-in-view: false
@@ -29,4 +33,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.CockroachDB201Dialect
         connection:
-          provider_disables_autocommit: false
+          provider_disables_autocommit: true
+        jdbc:
+          batch_size: 128
+          fetch_size: 128
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+
+

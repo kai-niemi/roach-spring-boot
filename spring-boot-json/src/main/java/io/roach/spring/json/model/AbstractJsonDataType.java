@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -20,12 +21,25 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 public abstract class AbstractJsonDataType<T> implements UserType {
-    private final ObjectMapper mapper = new ObjectMapper()
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    public static LocalDateTimeSerializer ISO_DATETIME_SERIALIZER
+            = new LocalDateTimeSerializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+    private static final ObjectMapper mapper;
+
+    static {
+        JavaTimeModule module = new JavaTimeModule();
+        module.addSerializer(ISO_DATETIME_SERIALIZER);
+        mapper = new ObjectMapper()
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
+                .registerModule(module);
+    }
 
     @Override
     public int[] sqlTypes() {

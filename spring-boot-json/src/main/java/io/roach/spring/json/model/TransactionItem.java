@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import org.springframework.util.Assert;
-
 public class TransactionItem {
     public static Builder builder(Transaction.Builder parentBuilder, Consumer<TransactionItem> callback) {
         return new Builder(parentBuilder, callback);

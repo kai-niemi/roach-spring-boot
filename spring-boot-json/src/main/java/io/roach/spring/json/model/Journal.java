@@ -19,15 +19,15 @@ public abstract class Journal<T> {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Computed column
     private String id;
 
-    @Column(name = "tag", updatable = false)
+    @Column(name = "tag")
     private String tag;
 
     @Basic
-    @Column(name = "updated", updatable = false)
+    @Column(name = "updated")
     private LocalDateTime updated;
 
     @Type(type = "jsonb")
-    @Column(name = "payload", updatable = false)
+    @Column(name = "payload")
     @Basic(fetch = FetchType.LAZY)
     private T event;
 
