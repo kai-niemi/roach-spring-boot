@@ -1,0 +1,5 @@
+^__^
+(oo)\_______
+(__)\       )\/\   CockroachDB on Spring  ${application.formatted-version} - Inbox Pattern
+   ||----w |       powered by Spring Boot ${spring-boot.formatted-version}
+   ||     ||
