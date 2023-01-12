@@ -17,36 +17,31 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/register")
+@RequestMapping(value = "/registration")
 public class RegistrationController {
     @Autowired
     private RegistrationEventProducer eventProducer;
 
     @PostMapping(value = "/")
     public ResponseEntity<EntityModel<RegistrationEvent>> sendMessage(
-            @RequestBody RegistrationEvent registrationEvent) {
-        if (registrationEvent.getId() == null) {
-            registrationEvent.setId(UUID.randomUUID());
+            @RequestBody RegistrationEvent event) {
+        if (event.getId() == null) {
+            event.setId(UUID.randomUUID());
         }
-        eventProducer.sendMessage(registrationEvent);
-        return ResponseEntity.ok(toModel(registrationEvent));
+        eventProducer.sendMessage(event);
+        // Respond with a 202 - "we got your number"
+        return ResponseEntity.accepted().body(EntityModel.of(event));
     }
 
-    @GetMapping("/template")
-    public ResponseEntity<EntityModel<RegistrationEvent>> getTemplate() {
+    @GetMapping("/form")
+    public ResponseEntity<EntityModel<RegistrationEvent>> getFormTemplate() {
         RegistrationEvent event = RegistrationEvent.builder()
-                .withJurisdiction("MGA")
+                .withJurisdiction("mga")
                 .withEmail("user@email.com")
                 .withName("User")
                 .build();
         return ResponseEntity.ok(EntityModel.of(event)
                 .add(linkTo(methodOn(getClass()).sendMessage(null))
-                        .withRel("register")));
-    }
-
-
-    private EntityModel<RegistrationEvent> toModel(RegistrationEvent event) {
-        return EntityModel.of(event)
-                .add(linkTo(methodOn(getClass()).sendMessage(event)).withSelfRel());
+                        .withRel("registration")));
     }
 }

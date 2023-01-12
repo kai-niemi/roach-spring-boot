@@ -1,3 +1,7 @@
 spring:
   datasource:
     url: jdbc:postgresql://192.168.1.99:26257/spring_boot?sslmode=disable
+
+active-mq:
+  broker-url: tcp://192.168.1.99:61616
+  topic: registration.topic

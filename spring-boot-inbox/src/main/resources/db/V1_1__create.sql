@@ -1,12 +1,18 @@
--- Stores immutable events in json format, mapped to entity types via JPA's single table inheritance model
-create table journal
+CREATE SEQUENCE journal_seq START 1 INCREMENT 1;
+
+-- Inbox table that stores events in json format, mapped to entity types via JPAs
+-- single table inheritance model using event_type as discriminator.
+CREATE TABLE journal
 (
-    id         STRING PRIMARY KEY AS (payload ->> 'id') STORED, -- computed primary index column
-    event_type varchar(15) not null, -- discriminator
-    payload    json,
-    tag        varchar(64),
-    updated    timestamptz default clock_timestamp(),
+    id          uuid primary key as ((payload ->> 'id')::UUID) stored, -- Computed primary index column
+    event_type  varchar(15) not null,
+    status      varchar(64) not null,
+    sequence_no int         default nextval('journal_seq'),
+    payload     json,
+    tag         varchar(64),
+    updated_at  timestamptz default clock_timestamp(),
+
     INVERTED INDEX event_payload (payload)
 );
 
-create index idx_journal_main on journal (event_type, tag) storing (payload);
+CREATE INDEX idx_journal_main ON journal (event_type) STORING (status, sequence_no, payload, tag, updated_at);

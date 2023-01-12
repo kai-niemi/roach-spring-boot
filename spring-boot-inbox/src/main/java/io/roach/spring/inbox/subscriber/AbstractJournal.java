@@ -1,10 +1,17 @@
 package io.roach.spring.inbox.subscriber;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "journal")
@@ -14,17 +21,30 @@ import org.hibernate.annotations.Type;
         discriminatorType = DiscriminatorType.STRING,
         length = 15
 )
-public abstract class AbstractJournal<T> {
+@TypeDefs({@TypeDef(name = "crdb-uuid", typeClass = CockroachUUIDType.class)})
+@DynamicInsert
+@DynamicUpdate
+public abstract class AbstractJournal<T> extends AbstractEntity<UUID> {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Computed column
-    private String id;
+    @Column(insertable = false, updatable = false, nullable = false)
+    // UUID computed column with pg-uuid to CRDB UUID mapping
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Type(type = "crdb-uuid", parameters = @org.hibernate.annotations.Parameter(name = "column", value = "id"))
+    @JsonIgnore
+    private UUID id;
 
     @Column(name = "tag")
     private String tag;
 
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "sequence_no", updatable = false, nullable = false, insertable = false)
+    private Long sequenceNumber;
+
     @Basic
-    @Column(name = "updated")
-    private LocalDateTime updated;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @Type(type = "jsonb")
     @Column(name = "payload")
@@ -33,13 +53,21 @@ public abstract class AbstractJournal<T> {
 
     @PrePersist
     protected void onCreate() {
-        if (updated == null) {
-            updated = LocalDateTime.now();
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now();
         }
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public T getEvent() {
@@ -58,7 +86,11 @@ public abstract class AbstractJournal<T> {
         this.tag = origin;
     }
 
-    public LocalDateTime getUpdated() {
-        return updated;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Long getSequenceNumber() {
+        return sequenceNumber;
     }
 }
